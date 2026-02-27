@@ -208,7 +208,7 @@ const PaymentScreen = () => {
                                     <span className="text-[11px] text-gray-500">Secure payment via TBC Bank gateway</span>
                                 </div>
                                 <div className="ml-auto flex gap-2">
-                                    <img src="https://img.icons8.com/color/1200/visa.jpg" alt="Visa" className="h-4" />
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Visa_Inc._logo_%282005%E2%80%932014%29.svg/960px-Visa_Inc._logo_%282005%E2%80%932014%29.svg.png?_=20170118154621" alt="Visa" className="h-4" />
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-4" />
                                 </div>
                             </div>
