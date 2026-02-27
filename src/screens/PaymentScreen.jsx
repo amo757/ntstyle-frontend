@@ -57,7 +57,7 @@ const PaymentScreen = () => {
                 orderItems: cartItems.map(item => ({
                     product: item._id,
                     name: item.name,
-                    quantity: item.quantity, 
+                    quantity: item.quantity,
                     price: item.price,
                     image: item.images?.[0] || '',
                     size: item.size
@@ -84,14 +84,14 @@ const PaymentScreen = () => {
                 try {
                     // სწორი მისამართი (payment მხოლობითში)
                     const paymentUrl = 'https://ntstyle-api.onrender.com/api/payment/create-payment';
-                    
+
                     console.log("ვაგზავნით მოთხოვნას აქ:", paymentUrl);
 
                     const { data: paymentData } = await axios.post(
-                        paymentUrl, 
+                        paymentUrl,
                         {
-                            orderId: createdOrder._id, 
-                            amount: finalTotal 
+                            orderId: createdOrder._id,
+                            amount: finalTotal
                         },
                         config
                     );
@@ -103,7 +103,7 @@ const PaymentScreen = () => {
                         // კალათის გასუფთავება გადამისამართებამდე
                         clearCart();
                         localStorage.removeItem('cartItems');
-                        
+
                         // გადაყვანა ბანკის საიტზე
                         window.location.href = paymentData.checkoutUrl;
                         return;
@@ -208,8 +208,7 @@ const PaymentScreen = () => {
                                     <span className="text-[11px] text-gray-500">Secure payment via TBC Bank gateway</span>
                                 </div>
                                 <div className="ml-auto flex gap-2">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="h-4" />
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-4" />
+                                    <img src="/visa.png" alt="Visa-Mastercard" className="h-6 object-contain" />
                                 </div>
                             </div>
                             {paymentMethod === 'tbc' && (
