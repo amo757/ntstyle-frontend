@@ -23,7 +23,7 @@ const ShippingScreen = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         localStorage.setItem('shippingAddress', JSON.stringify(formData));
-        navigate('/payment'); 
+        navigate('/payment');
     };
 
     return (
@@ -51,11 +51,11 @@ const ShippingScreen = () => {
             </div>
 
             <div className="flex w-full">
-                
+
                 {/* --- LEFT SIDE: FORM (CONTENT AREA) --- */}
-                <div className="flex-grow min-h-screen pr-0 lg:pr-[380px] pt-28 bg-white"> 
+                <div className="flex-grow min-h-screen pr-0 lg:pr-[380px] pt-28 bg-white">
                     <div className="max-w-[600px] mx-auto px-6 pb-20">
-                        
+
                         {/* Progress Bar */}
                         <div className="flex justify-center items-center mb-16">
                             <div className="flex flex-col items-center relative z-10">
@@ -78,7 +78,7 @@ const ShippingScreen = () => {
                         <h2 className="text-[28px] text-black mb-8 font-normal pb-4 border-b border-gray-200" style={{ fontFamily: '"Playfair Display", serif' }}>
                             Shipping Address
                         </h2>
-                        
+
                         <div className="text-[13px] mb-8 text-gray-800 flex items-center">
                             Shipping to: <span className="font-bold ml-2 flex items-center gap-2 border-b border-black pb-0.5">🇬🇪 Georgia</span>
                         </div>
@@ -89,20 +89,20 @@ const ShippingScreen = () => {
                                 <div className="w-3/4 flex gap-4">
                                     <div className="w-1/2">
                                         <label className="block text-[11px] text-gray-500 mb-1 uppercase tracking-wider">First name</label>
-                                        <input required type="text" className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" onChange={(e) => setFormData({...formData, firstName: e.target.value})} />
+                                        <input required type="text" className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} />
                                     </div>
                                     <div className="w-1/2">
                                         <label className="block text-[11px] text-gray-500 mb-1 uppercase tracking-wider">Last name</label>
-                                        <input required type="text" className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" onChange={(e) => setFormData({...formData, lastName: e.target.value})} />
+                                        <input required type="text" className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} />
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {/* Address Field */}
                             <div>
                                 <label className="block text-[11px] text-gray-500 mb-1 uppercase tracking-wider">Address Search</label>
                                 <div className="relative">
-                                    <input type="text" className="w-full border border-gray-300 p-3.5 pl-10 text-[13px] focus:border-black outline-none rounded-none" placeholder="Start typing your address..."  onChange={(e)=>{setFormData({...formData, address: e.target.value})}}/>
+                                    <input type="text" className="w-full border border-gray-300 p-3.5 pl-10 text-[13px] focus:border-black outline-none rounded-none" placeholder="Start typing your address..." onChange={(e) => { setFormData({ ...formData, address: e.target.value }) }} />
                                     <svg className="w-4 h-4 absolute left-3.5 top-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                 </div>
                                 <p className="text-[11px] text-gray-500 mt-2 underline cursor-pointer hover:text-black">Enter address manually</p>
@@ -111,19 +111,19 @@ const ShippingScreen = () => {
                             {/* City Field */}
                             <div>
                                 <label className="block text-[11px] text-gray-500 mb-1 uppercase tracking-wider">City</label>
-                                <input 
-                                    required 
-                                    type="text" 
-                                    className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" 
+                                <input
+                                    required
+                                    type="text"
+                                    className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none"
                                     placeholder="Enter your city (e.g. Tbilisi)"
-                                    onChange={(e) => setFormData({...formData, city: e.target.value})} 
+                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                 />
                             </div>
 
                             {/* Phone Field */}
                             <div>
                                 <label className="block text-[11px] text-gray-500 mb-1 uppercase tracking-wider">Phone number</label>
-                                <input required type="tel" className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+                                <input required type="tel" className="w-full border border-gray-300 p-3.5 text-[13px] focus:border-black outline-none rounded-none" onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
                                 <p className="text-[10px] text-gray-400 mt-1">We may need to contact you about your order.</p>
                             </div>
 
@@ -135,7 +135,11 @@ const ShippingScreen = () => {
                         {/* Footer Help */}
                         <div className="mt-20 pt-10 border-t border-gray-100 text-center">
                             <h3 className="font-serif text-xl mb-4" style={{ fontFamily: '"Playfair Display", serif' }}>Need help?</h3>
-                            <button className="w-full border border-black py-3.5 flex items-center justify-center gap-3 text-[11px] font-bold hover:bg-gray-50 transition uppercase tracking-widest">
+                            <button
+                                type="button"
+                                onClick={() => window.open('https://m.me/SHENI_GVERDIS_ID_AN_NAME', '_blank')}
+                                className="w-full border border-black py-3.5 flex items-center justify-center gap-3 text-[11px] font-bold hover:bg-gray-50 transition uppercase tracking-widest"
+                            >
                                 <ChatIcon />
                                 Chat to an expert
                             </button>
@@ -146,14 +150,14 @@ const ShippingScreen = () => {
 
                 {/* --- RIGHT SIDE: ORDER SUMMARY (FIXED AND ON TOP) --- */}
                 <div className="hidden lg:block w-[380px] bg-[#F5F5F5] border-l border-gray-200 h-screen fixed right-0 top-0 overflow-y-auto scrollbar-thin z-[60]">
-                    
-                    <div className="pt-28 px-10 pb-10"> 
-                        
+
+                    <div className="pt-28 px-10 pb-10">
+
                         <div className="flex justify-between items-center mb-8">
                             <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-500">Order Summary</h3>
                             <Link to="/cart" className="text-[11px] underline text-gray-500 hover:text-black">Edit</Link>
                         </div>
-                        
+
                         <div className="space-y-6 mb-10">
                             {cartItems.map((item) => (
                                 <div key={item.slug + item.size} className="flex gap-4">
