@@ -139,7 +139,7 @@ const ShippingScreen = () => {
                                 <ChatIcon />
                                 Chat to an expert
                             </button>
-                            <p className="text-[11px] text-gray-500 mt-4">Call us on <span className="underline">+44 330 022 5700</span></p>
+                            <p className="text-[11px] text-gray-500 mt-4">Call us on <span className="underline">+995 593 14 25 77</span></p>
                         </div>
                     </div>
                 </div>
