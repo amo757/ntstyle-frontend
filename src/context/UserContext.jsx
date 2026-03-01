@@ -7,8 +7,6 @@ const UserContext = createContext();
 
 const USER_INFO_STORAGE = 'userInfo';
 
-// ✅ 1. აქ ვწერთ ბექენდის სრულ მისამართს (Render-ის ლინკი)
-// ეს უზრუნველყოფს, რომ მოთხოვნა წავიდეს Render-ზე და არა Netlify-ზე
 const BASE_URL = 'https://ntstyle-api.onrender.com';
 
 export const UserProvider = ({ children }) => {
@@ -31,12 +29,12 @@ export const UserProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    // ✅ 2. შესვლის ლოგიკა (Login) - გასწორებული ლინკით
+    // შესვლის ლოგიკა (Login)
     const login = async (email, password) => {
         try {
-            // აქ დაემატა BASE_URL
             const { data } = await axios.post(`${BASE_URL}/api/users/login`, { email, password });
             
+            // პირდაპირ ვიყენებთ ბექენდიდან წამოსულ მონაცემს
             setUser(data);
             localStorage.setItem(USER_INFO_STORAGE, JSON.stringify(data));
             
@@ -51,12 +49,12 @@ export const UserProvider = ({ children }) => {
         }
     };
 
-    // ✅ 3. რეგისტრაციის ლოგიკა (Register) - გასწორებული ლინკით
+    // რეგისტრაციის ლოგიკა (Register)
     const register = async (name, email, password) => {
         try {
-            // აქ დაემატა BASE_URL
             const { data } = await axios.post(`${BASE_URL}/api/users`, { name, email, password });
             
+            // პირდაპირ ვიყენებთ ბექენდიდან წამოსულ მონაცემს
             setUser(data);
             localStorage.setItem(USER_INFO_STORAGE, JSON.stringify(data));
             
