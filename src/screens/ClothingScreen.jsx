@@ -15,8 +15,8 @@ const translations = {
     // Sort Options
     sort_recommended: "სორტირება",
     sort_new: "ახლები",
-    sort_price_low: "ფასი კლებადობით",
-    sort_price_high: "ფასი ზრდადობით",
+    sort_price_low: "ფასი ზრდადობით",
+    sort_price_high: "ფასი კლებადობით",
     
     // Sidebar Titles
     designer_title: "დიზაინერი", // ან DESIGNER თუ ინგლისურად გინდათ დარჩეს
