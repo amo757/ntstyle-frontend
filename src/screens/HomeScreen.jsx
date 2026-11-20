@@ -4,6 +4,15 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 
 const IMAGE_URL = "/blackfriday2026.jpg"; 
 
+// --- საწყისი (გადახაზული) ფასის გამოთვლა 30%-იანი ფასდაკლების მიხედვით ---
+const getOriginalPrice = (priceStr) => {
+  if (!priceStr) return '';
+  const numericValue = parseFloat(priceStr.replace(/[^\d.]/g, ''));
+  if (isNaN(numericValue)) return '';
+  const original = Math.round(numericValue / 0.7);
+  return `${original} ₾`;
+};
+
 // --- თარგმანები და სრული მონაცემები ---
 const translations = {
   ge: {
@@ -15,18 +24,18 @@ const translations = {
     newInDesc: "ახალი პროდუქცია – აღმოაჩინეთ უახლესი მოდელები ორშაბათიდან პარასკევის ჩათვლით.",
     newInBtn: "იხილეთ სიახლეები",
     products: [
-      { name: 'ბეწვის ქურთუკი', description: 'ყავისფერი', slug: 'white-cardigan', image: '/clothes/good/1 17 ბეწვიანი.jpg' },
-      { name: 'ყვავილებიანი მოსაცმელი', description: 'თეთრი', slug: 'dark-cardigan', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg' },
-      { name: 'კოპლებიანი მოსაცმელი', description: 'შავი', slug: 'white-cardigan-2', image: '/clothes/good/3 16-2 კოპლებიანი.jpg' },
-      { name: 'ბეწვის ქურთუკი', description: 'შავი', slug: 'leather-ankle', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg' },
-      { name: 'პალტო', description: 'კრემისფერი', slug: 'new-style', image: '/clothes/good/5 15 პალტო.jpg' },
-      { name: 'ბეწვიანი ჟილეტი', description: 'შავი', slug: 'white-cardigan', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg' },
-      { name: 'ვარდიანი კოსტუმი', description: 'შავი', slug: 'dark-cardigan', image: '/clothes/good/7 16 ვარდიანი შავი.jpg' },
-      { name: 'ვარდიანი კოსტუმი', description: 'თეთრი', slug: 'white-cardigan-2', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg' },
-      { name: 'ბეწვის ქურთუკი', description: 'სერი', slug: 'leather-ankle', image: '/clothes/good/9 ბეწვიანი სერი.jpg' },
-      { name: 'ბეწვის ქურთუკი', description: 'შავი', slug: 'new-style', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg' },
-      { name: 'კოპლებიანი მოსაცმელი', description: 'შავი', slug: 'leather-ankle', image: '/clothes/good/11 16 კოპლებიანი.jpg' },
-      { name: 'ბეწვიანი ჟილეტი', description: 'შავი', slug: 'leather-ankle', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg' },
+      { name: 'ბეწვის ქურთუკი', description: 'ყავისფერი', slug: 'white-cardigan', image: '/clothes/good/1 17 ბეწვიანი.jpg', price: '229 ₾' },
+      { name: 'ყვავილებიანი მოსაცმელი', description: 'თეთრი', slug: 'dark-cardigan', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', price: '129 ₾' },
+      { name: 'კოპლებიანი მოსაცმელი', description: 'შავი', slug: 'white-cardigan-2', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', price: '289 ₾' },
+      { name: 'ბეწვის ქურთუკი', description: 'შავი', slug: 'leather-ankle', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', price: '229 ₾' },
+      { name: 'პალტო', description: 'კრემისფერი', slug: 'new-style', image: '/clothes/good/5 15 პალტო.jpg', price: '229 ₾' },
+      { name: 'ბეწვიანი ჟილეტი', description: 'შავი', slug: 'white-cardigan', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', price: '159 ₾' },
+      { name: 'ვარდიანი კოსტუმი', description: 'შავი', slug: 'dark-cardigan', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', price: '289 ₾' },
+      { name: 'ვარდიანი კოსტუმი', description: 'თეთრი', slug: 'white-cardigan-2', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', price: '289 ₾' },
+      { name: 'ბეწვის ქურთუკი', description: 'სერი', slug: 'leather-ankle', image: '/clothes/good/9 ბეწვიანი სერი.jpg', price: '229 ₾' },
+      { name: 'ბეწვის ქურთუკი', description: 'შავი', slug: 'new-style', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', price: '229 ₾' },
+      { name: 'კოპლებიანი მოსაცმელი', description: 'შავი', slug: 'leather-ankle', image: '/clothes/good/11 16 კოპლებიანი.jpg', price: '289 ₾' },
+      { name: 'ბეწვიანი ჟილეტი', description: 'შავი', slug: 'leather-ankle', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg', price: '159 ₾' },
     ],
     coatsTitle: "სეზონის მოდელები",
     shoesTitle: "სიახლეები",
@@ -34,13 +43,13 @@ const translations = {
     viewAll: "იხილეთ სრულად",
     wardrobeTitle: "განაახლეთ თქვენი გარდერობი",
     wardrobeDesc: "შეხვდით ცივ ამინდებს ელეგანტურად: მოდური მოსაცმელები, თბილი ქსოვილები და ყველგანმავალი ჩექმები.",
-    knitwearTitle: "ბეწვის ქურთუკი", /* შეცვლილი */
-    knitwearDesc: "გამორჩეული ბეწვის ქურთუკი – არ გამოტოვოთ სეზონის ტრენდული მოდელები.", /* შეცვლილი */
+    knitwearTitle: "ბეწვის ქურთუკი",
+    knitwearDesc: "გამორჩეული ბეწვის ქურთუკი – არ გამოტოვოთ სეზონის ტრენდული მოდელები.",
     knitwearBtn: "შეიძინეთ ქსოვილები",
-    heelsTitle: "სამეული", /* შეცვლილი */
+    heelsTitle: "სამეული",
     heelsDesc: "კოსტუმი, შარვალთან და კოპლიან აბრეშუმის ზედასთან ერთად",
     heelsBtn: "შეიძინეთ ახალი კოლექცია",
-    statementCoatTitle: "ხელოვნური ბეწვის ჟილეტი", /* შეცვლილია */
+    statementCoatTitle: "ხელოვნური ბეწვის ჟილეტი",
     statementCoatDesc: "როცა უბრალოება საკმარისი არ არის, აირჩიეთ მოცულობითი ხელოვნური ბეწვი.",
     statementCoatBtn: "შეიძინეთ პალტოები",
     designerTitle: "ნათია თხელიძე: N.T. STYLE-ის სული",
@@ -50,22 +59,20 @@ const translations = {
     liveDesc: "ნახეთ, რას ყიდულობენ ახლა ყველაზე გემოვნებიანი ქალები მსოფლიოში",
     topStoriesTitle: "მთავარი სიახლეები N.T. STYLE-ზე",
     liveProducts: [
-      { brand: 'GOLDEN GOOSE', name: 'ჰეილი', location: 'თბილისი, GE', action: 'დაემატა სურვილებში', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/product/1', price: '₾ 250' },
-      { brand: 'BALENCIAGA', name: 'ნიკოლა', location: 'ბათუმი, GE', action: 'დაემატა სურვილებში', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', link: '/product/2', price: '₾ 180' },
-      { brand: 'ZIMMERMANN', name: 'ბიანკა', location: 'ქუთაისი, GE', action: 'დაემატა სურვილებში', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', link: '/product/3', price: '₾ 320' },
-      { brand: 'TOTEME', name: 'ანა', location: 'რუსთავი, GE', action: 'დაემატა კალათაში', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '₾ 210' },
-      { brand: 'AFLALO', name: 'რაღად', location: 'გორი, GE', action: 'დაემატა კალათაში', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '₾ 450' },
-      { brand: 'LIBEROWE', name: 'ლიზა', location: 'თბილისი, GE', action: 'დაემატა სურვილებში', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '₾ 150' },
-      { brand: 'SAINT LAURENT', name: 'მარმონტი', location: 'ბათუმი, GE', action: 'დაემატა კალათაში', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '₾ 290' }, 
+      { brand: 'N.T.style', name: 'ბეწვის ქურთუკი', location: 'თბილისი, GE', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/product/1', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'პერანგი', location: 'თბილისი, GE', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', link: '/product/2', price: '129 ₾' },
+      { brand: 'N.T.style', name: 'სამეული', location: 'თბილისი, GE', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', link: '/product/3', price: '289 ₾' },
+      { brand: 'N.T.style', name: 'ბეწვის ქურთუკი', location: 'თბილისი, GE', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'პალტო', location: 'თბილისი, GE', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'ბეწვიანი ჟილეტი', location: 'თბილისი, GE', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '159 ₾' },
+      { brand: 'N.T.style', name: 'ვარდიანი კოსტუმი', location: 'თბილისი, GE', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '289 ₾' }, 
     ],
     topStories: [
-      { category: 'მოდა', title: 'კაბების გზამკვლევი ყველა სიტუაციისთვის', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1' },
-      { category: 'მოდა', title: '5 დენიმის ტრენდი, რომელიც უნდა იცოდეთ', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', link: '/story/2' },
-      { category: 'მოდა', title: 'ყველაზე მოთხოვნადი: ბრწყინვალების დროა', image: '/clothes/good/9 ბეწვიანი სერი.jpg', link: '/story/3' },
-      { category: 'მოდა', title: 'ტრენდშია: მაღალყელიანი ჩექმები', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', link: '/story/4' },
-      { category: 'მოდა', title: 'საუკეთესო საჩუქრების გზამკვლევი', image: '/clothes/good/11 16 კოპლებიანი.jpg', link: '/story/5' },
-      { category: 'მოგზაურობა', title: 'ევროპის საუკეთესო სათხილამურო კურორტები', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg', link: '/story/6' },
-      { category: 'მოდა', title: 'ზამთრის აქსესუარები, რომლებიც აუცილებლად უნდა გქონდეთ', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/story/7' },
+      { category: 'შავი', title: 'ვარდიანი კოსტუმი', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1', price: '289 ₾' },
+      { category: 'თეთრი', title: 'ვარდიანი კოსტუმი', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', link: '/story/2', price: '289 ₾' },
+      { category: 'სერი', title: 'ბეწვის ქურთუკი', image: '/clothes/good/9 ბეწვიანი სერი.jpg', link: '/story/3', price: '229 ₾' },
+      { category: 'შავი', title: 'ბეწვის ქურთუკი', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', link: '/story/4', price: '229 ₾' },
+      { category: 'სამეული', title: 'კოპლებიანი მოსაცმელი', image: '/clothes/good/11 16 კოპლებიანი.jpg', link: '/story/5', price: '289 ₾' },
     ]
   },
   en: {
@@ -74,108 +81,118 @@ const translations = {
     heroBtn: "VIEW PARTY EDIT",
     newProductsCount: "11 NEW PRODUCTS",
     newInTitle: "JUST IN",
-    newInDesc: "New products five times a week – discover the latest models from Monday to Friday.",
+    newInDesc: "New products – discover the latest models from Monday to Friday.",
     newInBtn: "VIEW WHAT'S NEW",
     products: [
-      { name: 'White Cardigan', description: 'Le 5 à 7 leather shoulder', slug: 'white-cardigan', image: '/clothes/good/1 17 ბეწვიანი.jpg' },
-      { name: 'Dark Cardigan', description: 'Fringed checked cashmere scarf', slug: 'dark-cardigan', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg' },
-      { name: 'White Cardigan', description: 'Le 5 à 7 leather shoulder', slug: 'white-cardigan-2', image: '/clothes/good/3 16-2 კოპლებიანი.jpg' },
-      { name: 'Dark Cardigan', description: 'Leather ankle boots', slug: 'leather-ankle', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg' },
-      { name: 'New Style', description: 'Leather ankle boots', slug: 'new-style', image: '/clothes/good/5 15 პალტო.jpg' },
+      { name: 'Fur Coat', description: 'Brown', slug: 'white-cardigan', image: '/clothes/good/1 17 ბეწვიანი.jpg', price: '229 ₾' },
+      { name: 'Floral Cardigan', description: 'White', slug: 'dark-cardigan', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', price: '129 ₾' },
+      { name: 'Polka Dot Cardigan', description: 'Black', slug: 'white-cardigan-2', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', price: '289 ₾' },
+      { name: 'Fur Coat', description: 'Black', slug: 'leather-ankle', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', price: '229 ₾' },
+      { name: 'Coat', description: 'Beige', slug: 'new-style', image: '/clothes/good/5 15 პალტო.jpg', price: '229 ₾' },
+      { name: 'Fur Vest', description: 'Black', slug: 'white-cardigan', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', price: '159 ₾' },
+      { name: 'Rose Suit', description: 'Black', slug: 'dark-cardigan', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', price: '289 ₾' },
+      { name: 'Rose Suit', description: 'White', slug: 'white-cardigan-2', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', price: '289 ₾' },
+      { name: 'Fur Coat', description: 'Grey', slug: 'leather-ankle', image: '/clothes/good/9 ბეწვიანი სერი.jpg', price: '229 ₾' },
+      { name: 'Fur Coat', description: 'Black', slug: 'new-style', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', price: '229 ₾' },
+      { name: 'Polka Dot Cardigan', description: 'Black', slug: 'leather-ankle', image: '/clothes/good/11 16 კოპლებიანი.jpg', price: '289 ₾' },
+      { name: 'Fur Vest', description: 'Black', slug: 'leather-ankle', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg', price: '159 ₾' },
     ],
-    coatsTitle: "SEASON'S COATS",
-    shoesTitle: "SHOES",
+    coatsTitle: "SEASON'S MODELS",
+    shoesTitle: "NEW ARRIVALS",
     viewCollection: "VIEW COLLECTION",
     viewAll: "VIEW ALL",
     wardrobeTitle: "REFRESH YOUR WARDROBE",
     wardrobeDesc: "Face the cold weather elegantly: stylish outerwear, warm knits, and all-terrain boots.",
-    knitwearTitle: "NEED-TO-KNOW KNITS",
-    knitwearDesc: "Embrace knitwear with a twist – don't miss this season's exaggerated cuffs and tactile textures.",
+    knitwearTitle: "FUR COAT",
+    knitwearDesc: "Standout fur coat – don't miss this season's trending models.",
     knitwearBtn: "SHOP KNITWEAR",
-    heelsTitle: "THE HIGH-IMPACT HEEL",
-    heelsDesc: "Elevate your party looks with our pick of striking slingbacks and other dancing duos.",
-    heelsBtn: "SHOP HEELS",
-    statementCoatTitle: "THE STATEMENT COAT",
-    statementCoatDesc: "When subtlety simply won't do, reach for voluminous shearling and plush faux fur.",
+    heelsTitle: "THREE-PIECE SET",
+    heelsDesc: "Blazer paired with trousers and a polka-dot silk top",
+    heelsBtn: "SHOP NEW COLLECTION",
+    statementCoatTitle: "FAUX FUR VEST",
+    statementCoatDesc: "When simplicity simply won't do, reach for voluminous faux fur.",
     statementCoatBtn: "SHOP COATS",
     designerTitle: "NATIA TKHELIDZE: THE SOUL OF N.T. STYLE",
     designerDesc: "The Georgian designer who built the brand with her unique vision. Natia Tkhelidze talks about inspiration, elegance, and staying true to oneself in the world of fashion.",
     designerBtn: "MEET THE DESIGNER AND BRAND STORY",
     liveTitle: "N.T. STYLE Live",
-    liveDesc: "Showcasing what the world's most stylish women are buying right now",
+    liveDesc: "See what the world's most stylish women are buying right now",
     topStoriesTitle: "TOP STORIES ON N.T. STYLE",
     liveProducts: [
-      { brand: 'GOLDEN GOOSE', name: 'Hayley', location: 'CROYDON, GB', action: 'Added to Wish List', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/product/1', price: '$ 95' },
-      { brand: 'BALENCIAGA', name: 'Nicola', location: 'BRISTOL, GB', action: 'Added to Wish List', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', link: '/product/2', price: '$ 75' },
-      { brand: 'ZIMMERMANN', name: 'Bianca', location: 'SYDNEY, AU', action: 'Added to Wish List', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', link: '/product/3', price: '$ 120' },
-      { brand: 'TOTEME', name: 'Ana', location: 'LARCHMONT, US', action: 'Added to Bag', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '$ 80' },
-      { brand: 'AFLALO', name: 'Raghad', location: 'KUWAIT, KW', action: 'Added to Bag', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '$ 150' },
-      { brand: 'LIBEROWE', name: 'Lisa', location: 'MANCHESTER, GB', action: 'Added to Wish List', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '$ 60' },
-      { brand: 'SAINT LAURENT', name: 'Marmont', location: 'LONDON, GB', action: 'Added to Bag', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '$ 110' },
+      { brand: 'N.T.style', name: 'Fur Coat', location: 'Tbilisi, GE', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/product/1', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'Shirt', location: 'Tbilisi, GE', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', link: '/product/2', price: '129 ₾' },
+      { brand: 'N.T.style', name: 'Three-Piece Set', location: 'Tbilisi, GE', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', link: '/product/3', price: '289 ₾' },
+      { brand: 'N.T.style', name: 'Fur Coat', location: 'Tbilisi, GE', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'Coat', location: 'Tbilisi, GE', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'Fur Vest', location: 'Tbilisi, GE', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '159 ₾' },
+      { brand: 'N.T.style', name: 'Rose Suit', location: 'Tbilisi, GE', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '289 ₾' },
     ],
     topStories: [
-      { category: 'FASHION', title: 'The dress guide for every occasion', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1' },
-      { category: 'FASHION', title: '5 denim trends to know now', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', link: '/story/2' },
-      { category: 'FASHION', title: 'Most Wanted: time to shine', image: '/clothes/good/9 ბეწვიანი სერი.jpg', link: '/story/3' },
-      { category: 'FASHION', title: 'Trending Now: over-the-knee boots', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', link: '/story/4' },
-      { category: 'FASHION', title: 'The ultimate holiday gift guide', image: '/clothes/good/11 16 კოპლებიანი.jpg', link: '/story/5' },
-      { category: 'TRAVEL', title: 'In the know: Europe’s chicest ski escapes', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg', link: '/story/6' },
-      { category: 'FASHION', title: 'Winter accessories you must have', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/story/7' },
+      { category: 'BLACK', title: 'Rose Suit', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1', price: '289 ₾' },
+      { category: 'WHITE', title: 'Rose Suit', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', link: '/story/2', price: '289 ₾' },
+      { category: 'GREY', title: 'Fur Coat', image: '/clothes/good/9 ბეწვიანი სერი.jpg', link: '/story/3', price: '229 ₾' },
+      { category: 'BLACK', title: 'Fur Coat', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', link: '/story/4', price: '229 ₾' },
+      { category: 'THREE-PIECE SET', title: 'Polka Dot Cardigan', image: '/clothes/good/11 16 კოპლებიანი.jpg', link: '/story/5', price: '289 ₾' },
     ]
   },
   ru: {
     heroTitle: "ПРАЗДНИКИ НАЧИНАЮТСЯ С N.T. STYLE",
     heroDesc: "Время создать свой праздничный гардероб, от впечатляющих платьев до выдающихся аксессуаров.",
     heroBtn: "СМОТРЕТЬ ВЕЧЕРНЮЮ КОЛЛЕКЦИЮ",
-    newProductsCount: "11 НОВЫЙ ТОВАР",
-    newInTitle: "ТОЛЬКО ЧТО ПОСТУПИЛО",
-    newInDesc: "Новые товары пять раз в неделю – открывайте для себя новейшие модели с понедельника по пятницу.",
+    newProductsCount: "11 НОВЫХ ТОВАРОВ",
+    newInTitle: "НОВЫЕ ПОСТУПЛЕНИЯ",
+    newInDesc: "Новые товары – открывайте для себя новейшие модели с понедельника по пятницу.",
     newInBtn: "СМОТРЕТЬ НОВИНКИ",
     products: [
-      { name: 'Белый кардиган', description: 'Кожаная сумка на плечо', slug: 'white-cardigan', image: '/clothes/good/1 17 ბეწვიანი.jpg' },
-      { name: 'Темный кардиган', description: 'Кашемировый шарф в клетку', slug: 'dark-cardigan', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg' },
-      { name: 'Белый кардиган', description: 'Кожаная сумка на плечо', slug: 'white-cardigan-2', image: '/clothes/good/3 16-2 კოპლებიანი.jpg' },
-      { name: 'Темный кардиган', description: 'Кожаные ботильоны', slug: 'leather-ankle', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg' },
-      { name: 'Новый стиль', description: 'Кожаные ботильоны', slug: 'new-style', image: '/clothes/good/5 15 პალტო.jpg' },
+      { name: 'Шуба', description: 'Коричневый', slug: 'white-cardigan', image: '/clothes/good/1 17 ბეწვიანი.jpg', price: '229 ₾' },
+      { name: 'Цветочный кардиган', description: 'Белый', slug: 'dark-cardigan', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', price: '129 ₾' },
+      { name: 'Кардиган в горошек', description: 'Черный', slug: 'white-cardigan-2', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', price: '289 ₾' },
+      { name: 'Шуба', description: 'Черный', slug: 'leather-ankle', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', price: '229 ₾' },
+      { name: 'Пальто', description: 'Бежевый', slug: 'new-style', image: '/clothes/good/5 15 პალტო.jpg', price: '229 ₾' },
+      { name: 'Меховой жилет', description: 'Черный', slug: 'white-cardigan', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', price: '159 ₾' },
+      { name: 'Костюм с розами', description: 'Черный', slug: 'dark-cardigan', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', price: '289 ₾' },
+      { name: 'Костюм с розами', description: 'Белый', slug: 'white-cardigan-2', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', price: '289 ₾' },
+      { name: 'Шуба', description: 'Серый', slug: 'leather-ankle', image: '/clothes/good/9 ბეწვიანი სერი.jpg', price: '229 ₾' },
+      { name: 'Шуба', description: 'Черный', slug: 'new-style', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', price: '229 ₾' },
+      { name: 'Кардиган в горошек', description: 'Черный', slug: 'leather-ankle', image: '/clothes/good/11 16 კოპლებიანი.jpg', price: '289 ₾' },
+      { name: 'Меховой жилет', description: 'Черный', slug: 'leather-ankle', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg', price: '159 ₾' },
     ],
-    coatsTitle: "ПАЛЬТО СЕЗОНА",
-    shoesTitle: "ОБУВЬ",
+    coatsTitle: "МОДЕЛИ СЕЗОНА",
+    shoesTitle: "НОВИНКИ",
     viewCollection: "СМОТРЕТЬ КОЛЛЕКЦИЮ",
     viewAll: "СМОТРЕТЬ ВСЕ",
     wardrobeTitle: "ОБНОВИТЕ СВОЙ ГАРДЕРОБ",
     wardrobeDesc: "Встречайте холодную погоду элегантно: стильная верхняя одежда, теплый трикотаж и вездеходные ботинки.",
-    knitwearTitle: "ТРИКОТАЖ СЕЗОНА",
-    knitwearDesc: "Откройте для себя необычный трикотаж – не пропустите трендовые текстуры этого сезона.",
+    knitwearTitle: "ШУБА",
+    knitwearDesc: "Эксклюзивная шуба – не пропустите трендовые модели этого сезона.",
     knitwearBtn: "КУПИТЬ ТРИКОТАЖ",
-    heelsTitle: "ЭФФЕКТНЫЕ КАБЛУКИ",
-    heelsDesc: "Дополните свой праздничный образ нашей подборкой потрясающих туфель.",
-    heelsBtn: "КУПИТЬ ТУФЛИ",
-    statementCoatTitle: "АКЦЕНТНОЕ ПАЛЬТО",
+    heelsTitle: "КОСТЮМ-ТРОЙКА",
+    heelsDesc: "Пиджак в сочетании с брюками и шелковым топом в горошек",
+    heelsBtn: "КУПИТЬ НОВУЮ КОЛЛЕКЦИЮ",
+    statementCoatTitle: "ЖИЛЕТ ИЗ ИСКУССТВЕННОГО МЕХА",
     statementCoatDesc: "Когда простоты недостаточно, выбирайте объемный искусственный мех.",
     statementCoatBtn: "КУПИТЬ ПАЛЬТО",
     designerTitle: "НАТИЯ ТХЕЛИДЗЕ: ДУША N.T. STYLE",
-    designerDesc: "Грузинский дизайнер, создавший бренд со своим уникальным видением.",
-    designerBtn: "ПОЗНАКОМЬТЕСЬ С ДИЗАЙНЕРОМ",
+    designerDesc: "Грузинский дизайнер, создавший бренд со своим уникальным видением. Натия Тхелидзе рассказывает о вдохновении, элегантности и о том, как оставаться верной себе в мире моды.",
+    designerBtn: "ПОЗНАКОМЬТЕСЬ С ДИЗАЙНЕРОМ И ИСТОРИЕЙ БРЕНДА",
     liveTitle: "N.T. STYLE Live",
-    liveDesc: "Показываем, что сейчас покупают самые стильные женщины мира",
+    liveDesc: "Посмотрите, что сейчас покупают самые стильные женщины мира",
     topStoriesTitle: "ГЛАВНЫЕ НОВОСТИ НА N.T. STYLE",
     liveProducts: [
-      { brand: 'GOLDEN GOOSE', name: 'Хейли', location: 'ЛОНДОН, GB', action: 'Добавлено в избранное', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/product/1', price: '₽ 8,500' },
-      { brand: 'BALENCIAGA', name: 'Никола', location: 'БРИСТОЛЬ, GB', action: 'Добавлено в избранное', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', link: '/product/2', price: '₽ 6,200' },
-      { brand: 'ZIMMERMANN', name: 'Бианка', location: 'СИДНЕЙ, AU', action: 'Добавлено в избранное', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', link: '/product/3', price: '₽ 10,500' },
-      { brand: 'TOTEME', name: 'Ана', location: 'НЬЮ-ЙОРК, US', action: 'Добавлено в корзину', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '₽ 7,100' },
-      { brand: 'AFLALO', name: 'Рагад', location: 'КУВЕЙТ, KW', action: 'Добавлено в корзину', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '₽ 14,000' },
-      { brand: 'LIBEROWE', name: 'Лиза', location: 'МАНЧЕСТЕР, GB', action: 'Добавлено в избранное', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '₽ 5,000' },
-      { brand: 'SAINT LAURENT', name: 'Мармонт', location: 'ЛОНДОН, GB', action: 'Добавлено в корзину', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '₽ 9,800' },
+      { brand: 'N.T.style', name: 'Шуба', location: 'Тбилиси, GE', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/product/1', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'Рубашка', location: 'Тбилиси, GE', image: '/clothes/good/2 10 17 ბურთულებიანი.jpg', link: '/product/2', price: '129 ₾' },
+      { brand: 'N.T.style', name: 'Костюм-тройка', location: 'Тбилиси, GE', image: '/clothes/good/3 16-2 კოპლებიანი.jpg', link: '/product/3', price: '289 ₾' },
+      { brand: 'N.T.style', name: 'Шуба', location: 'Тбилиси, GE', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'Пальто', location: 'Тбилиси, GE', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '229 ₾' },
+      { brand: 'N.T.style', name: 'Меховой жилет', location: 'Тбилиси, GE', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '159 ₾' },
+      { brand: 'N.T.style', name: 'Костюм с розами', location: 'Тбилиси, GE', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '289 ₾' },
     ],
     topStories: [
-      { category: 'МОДА', title: 'Гид по платьям для любого случая', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1' },
-      { category: 'МОДА', title: '5 джинсовых трендов этого сезона', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', link: '/story/2' },
-      { category: 'МОДА', title: 'Самые желанные: время сиять', image: '/clothes/good/9 ბეწვიანი სერი.jpg', link: '/story/3' },
-      { category: 'МОДА', title: 'В тренде: ботфорты', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', link: '/story/4' },
-      { category: 'МОДА', title: 'Лучший гид по подаркам', image: '/clothes/good/11 16 კოპლებიანი.jpg', link: '/story/5' },
-      { category: 'ПУТЕШЕСТВИЯ', title: 'Лучшие горнолыжные курорты Европы', image: '/clothes/good/12 17 ბეწვიანი ჟილეტი.jpg', link: '/story/6' },
-      { category: 'МОДА', title: 'Зимние аксессуары, которые у вас должны быть', image: '/clothes/good/1 17 ბეწვიანი.jpg', link: '/story/7' },
+      { category: 'ЧЕРНЫЙ', title: 'Костюм с розами', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1', price: '289 ₾' },
+      { category: 'БЕЛЫЙ', title: 'Костюм с розами', image: '/clothes/good/8 16 ვარდიანი თეთრი.jpg', link: '/story/2', price: '289 ₾' },
+      { category: 'СЕРЫЙ', title: 'Шуба', image: '/clothes/good/9 ბეწვიანი სერი.jpg', link: '/story/3', price: '229 ₾' },
+      { category: 'ЧЕРНЫЙ', title: 'Шуба', image: '/clothes/good/10 17 ბეწვიანი შავი.jpg', link: '/story/4', price: '229 ₾' },
+      { category: 'КОСТЮМ-ТРОЙКА', title: 'Кардиган в горошек', image: '/clothes/good/11 16 კოპლებიანი.jpg', link: '/story/5', price: '289 ₾' },
     ]
   }
 };
@@ -270,7 +287,7 @@ const HomeScreen = () => {
     const liveElement = liveScrollRef.current;
 
     const intervalId = setInterval(() => {
-      const elements = [liveElement]; // აქედან ამოვიღეთ მეორე სექცია
+      const elements = [liveElement];
       
       elements.forEach(el => {
         if (!el) return;
@@ -320,7 +337,7 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      {/* --- 2. "New In" Carousel --- */}
+      {/* --- 2. "New In" Carousel (-30% Sale) --- */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-black">
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="w-full lg:w-1/4 flex flex-col justify-center">
@@ -338,10 +355,23 @@ const HomeScreen = () => {
               {t.products.map((product, index) => (
                 <Link to={`/product/${product.slug}`} key={index} className="group/item cursor-pointer block text-center w-[60%] sm:w-[40%] lg:w-[22%] flex-shrink-0">
                   <div className="relative overflow-hidden mb-4 bg-gray-50">
+                    <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[11px] font-bold tracking-wider px-2.5 py-1 shadow-sm">
+                      -30%
+                    </span>
                     <img src={product.image} alt={product.name} className="w-full h-[350px] object-cover object-top transition duration-700 group-hover/item:scale-105" />
                   </div>
                   <p className="text-sm font-bold uppercase tracking-wider">{product.name}</p>
                   <p className="text-xs text-gray-500 mt-1">{product.description}</p>
+                  {product.price && (
+                    <div className="flex items-center justify-center gap-2 mt-1.5">
+                      <span className="text-xs text-gray-400 line-through">
+                        {getOriginalPrice(product.price)}
+                      </span>
+                      <span className="text-sm font-bold text-red-600">
+                        {product.price}
+                      </span>
+                    </div>
+                  )}
                 </Link>
               ))}
             </div>
@@ -463,7 +493,7 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      {/* --- 7. Live & Top Stories --- */}
+      {/* --- 7. Live & Top Stories (-30% Sale Section) --- */}
       <section className="pt-20 pb-32 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -483,17 +513,30 @@ const HomeScreen = () => {
             {[...t.liveProducts, ...t.liveProducts, ...t.liveProducts].map((item, idx) => (
               <Link to={item.link} key={`live-${idx}`} className="group cursor-pointer inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-4 text-center relative">
                 
-                <div className="mb-4 flex justify-center items-center h-64 overflow-hidden bg-white">
+                <div className="relative mb-4 flex justify-center items-center h-64 overflow-hidden bg-white">
+                  <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[11px] font-bold tracking-wider px-2.5 py-1 shadow-sm">
+                    -30%
+                  </span>
                   <img 
                     src={item.image} 
                     alt={item.name} 
                     className="h-full w-full object-contain mix-blend-multiply transition-opacity duration-700 group-hover:opacity-75" 
                   />
                 </div>
+
                 <p className="text-[10px] font-bold uppercase tracking-wider mb-1 text-gray-900">{item.brand}</p>
                 <p className="text-sm font-serif mb-1 text-gray-800">{item.name}</p>
-                <p className="text-sm font-bold text-gray-900 mb-1">{item.price}</p>
-                <p className="text-[11px] italic text-gray-500 mb-1">{item.action}</p>
+                
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <span className="text-xs text-gray-400 line-through">
+                    {getOriginalPrice(item.price)}
+                  </span>
+                  <span className="text-sm font-bold text-red-600">
+                    {item.price}
+                  </span>
+                </div>
+
+                {item.action && <p className="text-[11px] italic text-gray-500 mb-1">{item.action}</p>}
                 <p className="text-[9px] text-gray-400 uppercase tracking-widest">{item.location}</p>
               </Link>
             ))}
@@ -507,23 +550,35 @@ const HomeScreen = () => {
             </h3>
           </div>
 
-          {/* აქ მოვხსენით ref, რათა აღარ ისქროლოს ავტომატურად */}
           <div className="flex overflow-x-auto whitespace-nowrap -mx-2 scrollbar-hide">
             {[...t.topStories, ...t.topStories, ...t.topStories].map((story, idx) => (
               <Link to={story.link} key={`story-${idx}`} className="inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-4 cursor-pointer group">
                 <div className="relative overflow-hidden mb-4 aspect-[3/4] w-full">
+                  <span className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[11px] font-bold tracking-wider px-2.5 py-1 shadow-sm">
+                    -30%
+                  </span>
                   <img 
                     src={story.image} 
                     alt={story.title} 
                     className="w-full h-full object-cover transition-opacity duration-700 group-hover:opacity-75" 
                   />
                 </div>
-                <p className="text-[10px] tracking-[0.15em] text-gray-500 uppercase mb-2 font-semibold">
+                <p className="text-[10px] tracking-[0.15em] text-gray-500 uppercase mb-1 font-semibold">
                   {story.category}
                 </p>
-                <h4 className="text-[14px] font-serif text-gray-900 leading-snug whitespace-normal">
+                <h4 className="text-[14px] font-serif text-gray-900 leading-snug whitespace-normal mb-1.5">
                   {story.title}
                 </h4>
+                {story.price && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400 line-through">
+                      {getOriginalPrice(story.price)}
+                    </span>
+                    <span className="text-sm font-bold text-red-600">
+                      {story.price}
+                    </span>
+                  </div>
+                )}
               </Link>
             ))}
           </div>
