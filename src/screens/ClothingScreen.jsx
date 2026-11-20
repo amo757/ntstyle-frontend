@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useWishlist } from '../context/WishlistContext';
-import { useLanguage } from '../context/LanguageContext'; // დამატებულია
+import { useLanguage } from '../context/LanguageContext';
 
 // --- TRANSLATIONS ---
 const translations = {
@@ -19,7 +19,7 @@ const translations = {
     sort_price_high: "ფასი კლებადობით",
     
     // Sidebar Titles
-    designer_title: "დიზაინერი", // ან DESIGNER თუ ინგლისურად გინდათ დარჩეს
+    product_name_title: "დასახელება",
     size_title: "ტანსაცმლის ზომა",
     price_title: "ფასი",
     
@@ -27,21 +27,15 @@ const translations = {
     unselect_all: "ყველას გაუქმება",
     clear_all: "გასუფთავება",
     
-    // Price Ranges
-    range_under_500: "500 ლარამდე",
-    range_500_1000: "500 ლარიდან - 1,000 ლარამდე",
-    range_1000_2000: "1,000 ლარიდან - 2,000 ლარამდე",
-    range_over_2000: "2,000 ლარზე მეტი",
-    
     // Product Card
     new_season: "ახალი სეზონი",
-    currency: "ლარი",
+    currency: "₾",
     
     // Pagination
     prev: "წინა",
     next: "შემდეგი",
     page: "გვერდი",
-    from: "-დან" // "50-დან"
+    from: "-დან"
   },
   en: {
     title: "Clothing",
@@ -54,17 +48,12 @@ const translations = {
     sort_price_low: "Price: Low to High",
     sort_price_high: "Price: High to Low",
     
-    designer_title: "Designer",
+    product_name_title: "Product Name",
     size_title: "Clothing Size",
     price_title: "Price",
     
     unselect_all: "Unselect all",
     clear_all: "Clear all",
-    
-    range_under_500: "Under 500 GEL",
-    range_500_1000: "500 GEL - 1,000 GEL",
-    range_1000_2000: "1,000 GEL - 2,000 GEL",
-    range_over_2000: "Over 2,000 GEL",
     
     new_season: "New Season",
     currency: "GEL",
@@ -73,6 +62,32 @@ const translations = {
     next: "Next",
     page: "Page",
     from: "of"
+  },
+  ru: {
+    title: "Одежда",
+    subtitle: "Создайте гардероб своей мечты с оригинальным выбором.",
+    filter_btn: "Фильтр",
+    results: "Результаты",
+    
+    sort_recommended: "Рекомендуемые",
+    sort_new: "Новинки",
+    sort_price_low: "Цена: по возрастанию",
+    sort_price_high: "Цена: по убыванию",
+    
+    product_name_title: "Наименование",
+    size_title: "Размер одежды",
+    price_title: "Цена",
+    
+    unselect_all: "Снять все",
+    clear_all: "Очистить все",
+    
+    new_season: "Новый сезон",
+    currency: "₾",
+    
+    prev: "Назад",
+    next: "Вперед",
+    page: "Страница",
+    from: "из"
   }
 };
 
@@ -91,7 +106,6 @@ const FilterIcon = () => (
 const HeartIcon = ({ filled, onClick }) => (
     <button
         onClick={onClick}
-        // 👇 აი აქ დაემატა ახალი კლასები: bg-white/80, p-2, rounded-full, hover:bg-white
         className="absolute top-3 right-3 z-20 focus:outline-none transform transition duration-200 active:scale-90 bg-white/80 p-2 rounded-full hover:bg-white shadow-sm"
     >
         <svg
@@ -100,7 +114,6 @@ const HeartIcon = ({ filled, onClick }) => (
             viewBox="0 0 24 24"
             strokeWidth={1.2}
             stroke="currentColor"
-            // 👇 აქედან hover:text-black ამოვიღეთ, რადგან ახლა მთლიანად ღილაკი რეაგირებს
             className={`w-5 h-5 transition duration-300 ${filled ? 'text-black' : 'text-gray-600'}`}
         >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -111,10 +124,10 @@ const HeartIcon = ({ filled, onClick }) => (
 // --- COMPONENTS ---
 const Checkbox = ({ label, checked, onChange }) => (
     <div onClick={onChange} className="flex items-center space-x-3 cursor-pointer group py-1">
-        <div className={`w-4 h-4 border border-gray-300 flex items-center justify-center transition ${checked ? 'bg-black border-black' : 'bg-white group-hover:border-gray-500'}`}>
+        <div className={`w-4 h-4 border border-gray-300 flex items-center justify-center transition flex-shrink-0 ${checked ? 'bg-black border-black' : 'bg-white group-hover:border-gray-500'}`}>
             {checked && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
         </div>
-        <span className={`text-[13px] select-none ${checked ? 'font-bold text-black' : 'text-gray-600 group-hover:text-black'}`}>{label}</span>
+        <span className={`text-[13px] select-none leading-tight ${checked ? 'font-bold text-black' : 'text-gray-600 group-hover:text-black'}`}>{label}</span>
     </div>
 );
 
@@ -151,15 +164,7 @@ const ProductSkeleton = () => (
 
 const ClothingScreen = () => {
     const { language } = useLanguage();
-    const t = translations[language];
-
-    // Moved PRICE_RANGES inside component to use translations
-    const PRICE_RANGES = [
-        { label: t.range_under_500, min: 0, max: 500 },
-        { label: t.range_500_1000, min: 500, max: 1000 },
-        { label: t.range_1000_2000, min: 1000, max: 2000 },
-        { label: t.range_over_2000, min: 2000, max: Infinity },
-    ];
+    const t = translations[language] || translations['ge'];
 
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -172,10 +177,13 @@ const ClothingScreen = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     // Filter States
-    const [openSections, setOpenSections] = useState({ category: false, designer: true, size: true, price: true });
-    const [selectedDesigners, setSelectedDesigners] = useState([]);
-    const [selectedPrices, setSelectedPrices] = useState([]);
+    const [openSections, setOpenSections] = useState({ name: true, size: true, price: true });
+    const [selectedNames, setSelectedNames] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
+
+    // Price Range Slider States
+    const [priceBounds, setPriceBounds] = useState({ min: 0, max: 1000 });
+    const [priceRange, setPriceRange] = useState([0, 1000]);
 
     const [currentSort, setCurrentSort] = useState(t.sort_recommended);
     const { toggleWishlist, isInWishlist } = useWishlist();
@@ -187,10 +195,18 @@ const ClothingScreen = () => {
                 const { data } = await axios.get('https://ntstyle-api.onrender.com/api/products');
                 setProducts(data);
                 setFilteredProducts(data);
+
+                if (data && data.length > 0) {
+                    const prices = data.map(p => Number(p.price) || 0);
+                    const minP = Math.floor(Math.min(...prices));
+                    const maxP = Math.ceil(Math.max(...prices));
+                    setPriceBounds({ min: minP, max: maxP > minP ? maxP : minP + 100 });
+                    setPriceRange([minP, maxP > minP ? maxP : minP + 100]);
+                }
             } catch (error) {
                 console.error("Error fetching products:", error);
             } finally {
-                setTimeout(() => setInitialLoading(false), 1000);
+                setTimeout(() => setInitialLoading(false), 600);
             }
         };
         fetchProducts();
@@ -207,37 +223,40 @@ const ClothingScreen = () => {
         setIsSortOpen(false);
         setIsSorting(true);
         setCurrentSort(sortOption);
-        setTimeout(() => setIsSorting(false), 800);
+        setTimeout(() => setIsSorting(false), 500);
     };
 
     // 3. FILTER & SORT LOGIC
     useEffect(() => {
         let result = [...products];
 
-        if (selectedDesigners.length > 0) {
-            result = result.filter(p => p.designer && selectedDesigners.includes(p.designer));
-        }
-        if (selectedPrices.length > 0) {
-            result = result.filter(p => selectedPrices.some(label => {
-                const range = PRICE_RANGES.find(r => r.label === label);
-                return range && p.price >= range.min && p.price <= range.max;
-            }));
-        }
-        if (selectedSizes.length > 0) {
-             // ლოგიკა ზომებზე (თუ API აბრუნებს ზომებს) - კოდი იგივე დავტოვე
-             // result = result.filter... 
-             // შენიშვნა: ორიგინალ კოდში ზომის ფილტრაციის ლოგიკა არ იყო რეალიზებული `useEffect`-ში, 
-             // მხოლოდ `selectedSizes` ივსებოდა. მე დავტოვე ზუსტად ისე, როგორც იყო.
+        // ფილტრი ტანსაცმლის დასახელებით
+        if (selectedNames.length > 0) {
+            result = result.filter(p => p.name && selectedNames.includes(p.name.trim()));
         }
 
-        // Sorting Logic using Translation Keys
+        // ფილტრი ფასის სლაიდერით
+        result = result.filter(p => {
+            const pPrice = Number(p.price) || 0;
+            return pPrice >= priceRange[0] && pPrice <= priceRange[1];
+        });
+
+        // ფილტრი ზომებით
+        if (selectedSizes.length > 0) {
+            result = result.filter(p => {
+                if (!p.sizes || !Array.isArray(p.sizes)) return true;
+                return p.sizes.some(s => selectedSizes.includes(s));
+            });
+        }
+
+        // სორტირება
         if (currentSort === t.sort_price_low) result.sort((a, b) => a.price - b.price);
         else if (currentSort === t.sort_price_high) result.sort((a, b) => b.price - a.price);
         else if (currentSort === t.sort_new) result.reverse();
 
         setFilteredProducts(result);
         setCurrentPage(1);
-    }, [selectedDesigners, selectedPrices, selectedSizes, products, currentSort, t, PRICE_RANGES]);
+    }, [selectedNames, priceRange, selectedSizes, products, currentSort, t.sort_price_low, t.sort_price_high, t.sort_new]);
 
     // 4. PAGINATION LOGIC
     const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
@@ -263,36 +282,88 @@ const ClothingScreen = () => {
 
     // UI Handlers
     const toggleSection = (section) => setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
-    const handleDesignerChange = (d) => setSelectedDesigners(prev => prev.includes(d) ? prev.filter(i => i !== d) : [...prev, d]);
-    const handlePriceChange = (p) => setSelectedPrices(prev => prev.includes(p) ? prev.filter(i => i !== p) : [...prev, p]);
+    const handleNameChange = (n) => setSelectedNames(prev => prev.includes(n) ? prev.filter(i => i !== n) : [...prev, n]);
     const handleSizeChange = (s) => setSelectedSizes(prev => prev.includes(s) ? prev.filter(i => i !== s) : [...prev, s]);
 
-    const removeFilter = (type, value) => {
-        if (type === 'designer') setSelectedDesigners(prev => prev.filter(d => d !== value));
-        if (type === 'price') setSelectedPrices(prev => prev.filter(p => p !== value));
-        if (type === 'size') setSelectedSizes(prev => prev.filter(s => s !== value));
+    const handleMinPriceSlider = (e) => {
+        const val = Math.min(Number(e.target.value), priceRange[1] - 1);
+        setPriceRange([val, priceRange[1]]);
     };
+
+    const handleMaxPriceSlider = (e) => {
+        const val = Math.max(Number(e.target.value), priceRange[0] + 1);
+        setPriceRange([priceRange[0], val]);
+    };
+
+    const isPriceFiltered = priceRange[0] > priceBounds.min || priceRange[1] < priceBounds.max;
 
     const clearAllFilters = () => {
-        setSelectedDesigners([]);
-        setSelectedPrices([]);
+        setSelectedNames([]);
         setSelectedSizes([]);
+        setPriceRange([priceBounds.min, priceBounds.max]);
     };
 
-    const uniqueDesigners = [...new Set(products.map(p => p.designer).filter(Boolean))];
+    // უნიკალური დასახელებების ამოღება პროდუქტებიდან
+    const uniqueProductNames = useMemo(() => {
+        return [...new Set(products.map(p => p.name?.trim()).filter(Boolean))];
+    }, [products]);
+
+    // სლაიდერის პროცენტული პოზიციები ვიზუალური ხაზისთვის
+    const minPercent = priceBounds.max > priceBounds.min 
+        ? ((priceRange[0] - priceBounds.min) / (priceBounds.max - priceBounds.min)) * 100 
+        : 0;
+    const maxPercent = priceBounds.max > priceBounds.min 
+        ? ((priceRange[1] - priceBounds.min) / (priceBounds.max - priceBounds.min)) * 100 
+        : 100;
 
     return (
         <div className="bg-white min-h-screen w-full font-sans">
             <style>
-                {`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');`}
+                {`
+                    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
+                    
+                    /* ორმხრივი სლაიდერის სტილები */
+                    .range-slider-input {
+                        pointer-events: none;
+                        position: absolute;
+                        height: 0;
+                        width: 100%;
+                        outline: none;
+                        -webkit-appearance: none;
+                        appearance: none;
+                        background: transparent;
+                    }
+                    .range-slider-input::-webkit-slider-thumb {
+                        pointer-events: all;
+                        width: 16px;
+                        height: 16px;
+                        border-radius: 50%;
+                        background-color: #000000;
+                        border: 2px solid #ffffff;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+                        cursor: pointer;
+                        -webkit-appearance: none;
+                        margin-top: -6px;
+                    }
+                    .range-slider-input::-moz-range-thumb {
+                        pointer-events: all;
+                        width: 16px;
+                        height: 16px;
+                        border-radius: 50%;
+                        background-color: #000000;
+                        border: 2px solid #ffffff;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+                        cursor: pointer;
+                    }
+                `}
             </style>
 
-            {/* HEADER */}
-            <div className="w-full flex flex-col items-center justify-center pt-12 pb-10 px-4">
-                <h1 className="text-[32px] md:text-[40px] mb-4 text-black" style={{ fontFamily: '"Playfair Display", serif' }}>
+            {/* HEADER - ზემოთ აწეული და დაბალანსებული */}
+            <div className="w-full flex flex-col items-center justify-center py-5 md:py-6 px-4">
+                <h1 className="text-[28px] md:text-[36px] mb-1.5 text-black leading-tight" style={{ fontFamily: '"Playfair Display", serif' }}>
                     {t.title}
                 </h1>
-                <p className="text-[13px] md:text-[14px] text-gray-800 leading-relaxed max-w-2xl text-center font-light tracking-wide">
+                <p className="text-[13px] md:text-[14px] text-gray-600 leading-snug max-w-2xl text-center font-light tracking-wide">
                     {t.subtitle}
                 </p>
             </div>
@@ -301,7 +372,7 @@ const ClothingScreen = () => {
             <div className="w-full px-6 md:px-10 pb-0 border-t border-gray-200">
 
                 {/* CONTROL BAR */}
-                <div className="flex justify-between items-center py-6 bg-white sticky top-0 z-30">
+                <div className="flex justify-between items-center py-5 bg-white sticky top-0 z-30">
                     <button onClick={() => setIsFilterOpen(!isFilterOpen)} className={`flex items-center px-5 py-3 transition bg-white border ${isFilterOpen ? 'border-black' : 'border-gray-300 hover:border-black'}`}>
                         <FilterIcon />
                         <span className="ml-3 mr-3 text-[12px] font-bold uppercase tracking-[0.1em]">{t.filter_btn}</span>
@@ -330,21 +401,82 @@ const ClothingScreen = () => {
                     {/* SIDEBAR */}
                     <div className={`flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${isFilterOpen ? 'w-64 opacity-100 mr-12' : 'w-0 opacity-0 mr-0'}`}>
                         <div className="w-64 pt-2 border-t border-gray-200">
-                            <div className="sticky top-32">
+                            <div className="sticky top-28">
+                                
+                                {/* 1. დასახელებებით ფილტრი */}
                                 <FilterSection 
-                                    title={t.designer_title}
-                                    isOpen={openSections.designer} 
-                                    toggle={() => toggleSection('designer')} 
-                                    onClear={() => setSelectedDesigners([])} 
-                                    hasSelection={selectedDesigners.length > 0}
+                                    title={t.product_name_title}
+                                    isOpen={openSections.name} 
+                                    toggle={() => toggleSection('name')} 
+                                    onClear={() => setSelectedNames([])} 
+                                    hasSelection={selectedNames.length > 0}
                                     clearText={t.unselect_all}
                                 >
                                     <div className="max-h-60 overflow-y-auto scrollbar-thin pr-2 space-y-1">
-                                        {uniqueDesigners.map(designer => (
-                                            <Checkbox key={designer} label={designer} checked={selectedDesigners.includes(designer)} onChange={() => handleDesignerChange(designer)} />
+                                        {uniqueProductNames.map(name => (
+                                            <Checkbox 
+                                                key={name} 
+                                                label={name} 
+                                                checked={selectedNames.includes(name)} 
+                                                onChange={() => handleNameChange(name)} 
+                                            />
                                         ))}
                                     </div>
                                 </FilterSection>
+
+                                {/* 2. ფასის რეგულირებადი სლაიდერი */}
+                                <FilterSection 
+                                    title={t.price_title}
+                                    isOpen={openSections.price} 
+                                    toggle={() => toggleSection('price')} 
+                                    onClear={() => setPriceRange([priceBounds.min, priceBounds.max])} 
+                                    hasSelection={isPriceFiltered}
+                                    clearText={t.unselect_all}
+                                >
+                                    <div className="px-1 pt-2 pb-3">
+                                        {/* არჩეული ფასების ჩვენება */}
+                                        <div className="flex items-center justify-between text-[13px] font-medium text-black mb-5">
+                                            <span className="border border-gray-200 px-2.5 py-1 bg-gray-50">
+                                                {priceRange[0]} {t.currency}
+                                            </span>
+                                            <span className="text-gray-400">—</span>
+                                            <span className="border border-gray-200 px-2.5 py-1 bg-gray-50">
+                                                {priceRange[1]} {t.currency}
+                                            </span>
+                                        </div>
+
+                                        {/* სლაიდერის ზოლი */}
+                                        <div className="relative h-6 flex items-center">
+                                            <div className="relative w-full h-1 bg-gray-200 rounded">
+                                                <div 
+                                                    className="absolute h-1 bg-black rounded"
+                                                    style={{
+                                                        left: `${minPercent}%`,
+                                                        width: `${maxPercent - minPercent}%`
+                                                    }}
+                                                />
+                                            </div>
+                                            <input
+                                                type="range"
+                                                min={priceBounds.min}
+                                                max={priceBounds.max}
+                                                value={priceRange[0]}
+                                                onChange={handleMinPriceSlider}
+                                                className="range-slider-input z-20"
+                                            />
+                                            <input
+                                                type="range"
+                                                min={priceBounds.min}
+                                                max={priceBounds.max}
+                                                value={priceRange[1]}
+                                                onChange={handleMaxPriceSlider}
+                                                className="range-slider-input z-30"
+                                            />
+                                        </div>
+                                    </div>
+                                </FilterSection>
+
+                                {/* 3. ზომებით ფილტრი */}
                                 <FilterSection 
                                     title={t.size_title}
                                     isOpen={openSections.size} 
@@ -354,21 +486,17 @@ const ClothingScreen = () => {
                                     clearText={t.unselect_all}
                                 >
                                     <div className="grid grid-cols-2 gap-1">
-                                        {SIZES.map(size => (<Checkbox key={size} label={size} checked={selectedSizes.includes(size)} onChange={() => handleSizeChange(size)} />))}
+                                        {SIZES.map(size => (
+                                            <Checkbox 
+                                                key={size} 
+                                                label={size} 
+                                                checked={selectedSizes.includes(size)} 
+                                                onChange={() => handleSizeChange(size)} 
+                                            />
+                                        ))}
                                     </div>
                                 </FilterSection>
-                                <FilterSection 
-                                    title={t.price_title}
-                                    isOpen={openSections.price} 
-                                    toggle={() => toggleSection('price')} 
-                                    onClear={() => setSelectedPrices([])} 
-                                    hasSelection={selectedPrices.length > 0}
-                                    clearText={t.unselect_all}
-                                >
-                                    <div className="space-y-1">
-                                        {PRICE_RANGES.map((range) => (<Checkbox key={range.label} label={range.label} checked={selectedPrices.includes(range.label)} onChange={() => handlePriceChange(range.label)} />))}
-                                    </div>
-                                </FilterSection>
+
                             </div>
                         </div>
                     </div>
@@ -377,14 +505,29 @@ const ClothingScreen = () => {
                     <div className="flex-grow min-w-0 transition-all duration-300 ease-in-out pt-2">
 
                         {/* ACTIVE FILTERS */}
-                        {(selectedDesigners.length > 0 || selectedPrices.length > 0 || selectedSizes.length > 0) && (
+                        {(selectedNames.length > 0 || isPriceFiltered || selectedSizes.length > 0) && (
                             <div className="flex flex-wrap gap-3 mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
-                                {[...selectedDesigners, ...selectedPrices, ...selectedSizes].map(item => (
-                                    <button key={item} onClick={() => { removeFilter('designer', item); removeFilter('price', item); removeFilter('size', item); }} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-3 transition group min-w-[120px]">
+                                {selectedNames.map(item => (
+                                    <button key={item} onClick={() => handleNameChange(item)} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-2.5 transition group min-w-[110px]">
                                         <span className="text-[13px] text-gray-800 group-hover:text-black">{item}</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-4 h-4 text-gray-500 ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
                                 ))}
+
+                                {isPriceFiltered && (
+                                    <button onClick={() => setPriceRange([priceBounds.min, priceBounds.max])} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-2.5 transition group">
+                                        <span className="text-[13px] text-gray-800 group-hover:text-black">{priceRange[0]} {t.currency} - {priceRange[1]} {t.currency}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-4 h-4 text-gray-500 ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                )}
+
+                                {selectedSizes.map(item => (
+                                    <button key={item} onClick={() => handleSizeChange(item)} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-2.5 transition group min-w-[90px]">
+                                        <span className="text-[13px] text-gray-800 group-hover:text-black">{item}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-4 h-4 text-gray-500 ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                ))}
+
                                 <button onClick={clearAllFilters} className="text-[12px] underline text-gray-500 hover:text-black underline-offset-4 ml-2">{t.clear_all}</button>
                             </div>
                         )}
@@ -412,7 +555,7 @@ const ClothingScreen = () => {
                                             <Link to={`/product/${product.slug}`} className="text-[13px] text-gray-600 font-light leading-snug hover:text-black transition-colors">{product.name}</Link>
                                             <p className="text-[13px] font-medium mt-1.5">{product.price} {t.currency}</p>
 
-                                            {/* ✅ COLORS */}
+                                            {/* COLORS */}
                                             {product.colors && product.colors.length > 0 && (
                                                 <div className="flex gap-1.5 mt-2">
                                                     {product.colors.map((color, index) => (
@@ -454,7 +597,7 @@ const ClothingScreen = () => {
                                 <span>{t.prev}</span>
                             </div>
                         </button>
-                        <span className="text-black">{t.page} {currentPage} &nbsp;{t.from} 50</span>
+                        <span className="text-black">{t.page} {currentPage} &nbsp;{t.from} {totalPages}</span>
                         <button onClick={goToNextPage} disabled={currentPage === totalPages} className={`flex items-center gap-4 transition ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:text-black cursor-pointer'}`}>
                             <div className="flex items-center">
                                 <span>{t.next}</span>
