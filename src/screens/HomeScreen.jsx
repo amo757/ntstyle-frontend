@@ -16,6 +16,9 @@ const getOriginalPrice = (priceStr) => {
 // --- თარგმანები და სრული მონაცემები ---
 const translations = {
   ge: {
+    menuHome: "მთავარი",
+    menuClothing: "ტანსაცმელი",
+    menuAbout: "ბრენდის შესახებ",
     heroTitle: "დღესასწაულები იწყება N.T. STYLE-თან ერთად",
     heroDesc: "დროა შექმნათ თქვენი სადღესასწაულო გარდერობი, შთამბეჭდავი კაბებიდან დაწყებული გამორჩეული აქსესუარებით დამთავრებული.",
     heroBtn: "იხილეთ წვეულების კოლექცია",
@@ -76,6 +79,9 @@ const translations = {
     ]
   },
   en: {
+    menuHome: "Home",
+    menuClothing: "Clothing",
+    menuAbout: "About N.T. Style",
     heroTitle: "HOLIDAYS START WITH N.T. STYLE",
     heroDesc: "Time to build your holiday wardrobe, from impressive dresses to standout accessories.",
     heroBtn: "VIEW PARTY EDIT",
@@ -136,6 +142,9 @@ const translations = {
     ]
   },
   ru: {
+    menuHome: "Главная",
+    menuClothing: "Одежда",
+    menuAbout: "О бренде",
     heroTitle: "ПРАЗДНИКИ НАЧИНАЮТСЯ С N.T. STYLE",
     heroDesc: "Время создать свой праздничный гардероб, от впечатляющих платьев до выдающихся аксессуаров.",
     heroBtn: "СМОТРЕТЬ ВЕЧЕРНЮЮ КОЛЛЕКЦИЮ",
@@ -210,6 +219,18 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
+const BurgerIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-7 h-7">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-7 h-7">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+  </svg>
+);
+
 // --- Custom Smooth Scroll Function ---
 const smoothScrollTo = (element, targetScrollLeft, duration) => {
   const startScrollLeft = element.scrollLeft;
@@ -240,6 +261,7 @@ const HomeScreen = () => {
   const scrollContainerRef = useRef(null);
   const liveScrollRef = useRef(null);
   const [activeStoryIndex, setActiveStoryIndex] = useState(2);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const editorialData = [
     {
@@ -312,24 +334,86 @@ const HomeScreen = () => {
   return (
     <div className="w-full overflow-x-hidden">
 
+      {/* --- მობილური ჰედერი ბურგერ მენიუთი (მხოლოდ მობილურზე) --- */}
+      <div className="md:hidden sticky top-0 z-40 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          aria-label="Open menu"
+          className="text-black p-1 focus:outline-none"
+        >
+          <BurgerIcon />
+        </button>
+        <Link to="/" className="text-lg font-serif tracking-widest uppercase text-black">
+          N.T. STYLE
+        </Link>
+        <div className="w-8" />
+      </div>
+
+      {/* --- მობილური ბურგერ მენიუს პანელი (Drawer) --- */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col p-6 z-10">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
+              <span className="text-lg font-serif tracking-widest uppercase text-black">
+                N.T. STYLE
+              </span>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close menu"
+                className="text-black p-1"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+            <nav className="flex flex-col space-y-5">
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-sm uppercase tracking-widest font-semibold text-gray-900 hover:text-gray-500"
+              >
+                {t.menuHome}
+              </Link>
+              <Link
+                to="/category/clothing"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-sm uppercase tracking-widest font-bold text-black border-b border-gray-100 pb-3 hover:text-gray-600"
+              >
+                {t.menuClothing}
+              </Link>
+              <Link
+                to="/category/aboutNT"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-sm uppercase tracking-widest font-semibold text-gray-900 hover:text-gray-500"
+              >
+                {t.menuAbout}
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
+
       {/* --- 1. Hero Section --- */}
-      <section className="relative h-[calc(100vh-160px)] w-full overflow-hidden bg-black">
+      <section className="relative h-[75vh] md:h-[calc(100vh-160px)] w-full overflow-hidden bg-black">
         <img
           src={IMAGE_URL}
           alt="Black Friday Offer"
           className="absolute top-0 left-0 w-full h-full object-cover object-top z-0"
           style={{ filter: 'brightness(0.8)' }}
         />
-        <div className="relative z-10 flex flex-col justify-end h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 text-white">
+        <div className="relative z-10 flex flex-col justify-end h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-20 text-white">
           <div className="inline-block max-w-2xl">
-            <h1 className="text-3xl md:text-4xl font-serif uppercase tracking-wider leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif uppercase tracking-wider leading-tight">
               {t.heroTitle}
             </h1>
-            <p className="mt-4 text-sm">
+            <p className="mt-3 md:mt-4 text-xs sm:text-sm">
               {t.heroDesc}
             </p>
-            <div className="mt-8 flex space-x-4">
-              <Link to="/category/clothing" className="bg-white text-black uppercase tracking-widest font-bold text-sm px-8 py-3 hover:bg-gray-200 transition duration-300">
+            <div className="mt-6 md:mt-8 flex space-x-4">
+              <Link to="/category/clothing" className="bg-white text-black uppercase tracking-widest font-bold text-xs sm:text-sm px-6 sm:px-8 py-3 hover:bg-gray-200 transition duration-300">
                 {t.heroBtn}
               </Link>
             </div>
@@ -338,12 +422,12 @@ const HomeScreen = () => {
       </section>
 
       {/* --- 2. "New In" Carousel (-30% Sale) --- */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-black">
-        <div className="flex flex-col lg:flex-row gap-12">
+      <section className="py-12 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-black">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           <div className="w-full lg:w-1/4 flex flex-col justify-center">
             <p className="text-xs tracking-[0.2em] uppercase text-gray-500 mb-2">{t.newProductsCount}</p>
-            <h2 className="text-5xl font-serif my-4 uppercase" dangerouslySetInnerHTML={{ __html: t.newInTitle.replace(' ', '<br/>') }}></h2>
-            <p className="text-sm text-gray-700 mb-8 leading-relaxed">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif my-3 md:my-4 uppercase" dangerouslySetInnerHTML={{ __html: t.newInTitle.replace(' ', '<br/>') }}></h2>
+            <p className="text-sm text-gray-700 mb-6 md:mb-8 leading-relaxed">
               {t.newInDesc}
             </p>
             <Link to="/category/clothing" className="inline-block bg-black text-white uppercase tracking-widest font-bold text-xs px-8 py-4 hover:bg-gray-800 transition duration-300 w-fit">
@@ -351,14 +435,14 @@ const HomeScreen = () => {
             </Link>
           </div>
           <div className="w-full lg:w-3/4 relative group">
-            <div ref={scrollContainerRef} className="flex overflow-x-auto gap-6 scrollbar-hide pb-4">
+            <div ref={scrollContainerRef} className="flex overflow-x-auto gap-4 md:gap-6 scrollbar-hide pb-4">
               {t.products.map((product, index) => (
-                <Link to={`/product/${product.slug}`} key={index} className="group/item cursor-pointer block text-center w-[60%] sm:w-[40%] lg:w-[22%] flex-shrink-0">
+                <Link to={`/product/${product.slug}`} key={index} className="group/item cursor-pointer block text-center w-[70%] sm:w-[40%] lg:w-[22%] flex-shrink-0">
                   <div className="relative overflow-hidden mb-4 bg-gray-50">
                     <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[11px] font-bold tracking-wider px-2.5 py-1 shadow-sm">
                       -30%
                     </span>
-                    <img src={product.image} alt={product.name} className="w-full h-[350px] object-cover object-top transition duration-700 group-hover/item:scale-105" />
+                    <img src={product.image} alt={product.name} className="w-full h-[280px] sm:h-[320px] md:h-[350px] object-cover object-top transition duration-700 group-hover/item:scale-105" />
                   </div>
                   <p className="text-sm font-bold uppercase tracking-wider">{product.name}</p>
                   <p className="text-xs text-gray-500 mt-1">{product.description}</p>
@@ -375,7 +459,7 @@ const HomeScreen = () => {
                 </Link>
               ))}
             </div>
-            <button onClick={scrollRight} className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-white">
+            <button onClick={scrollRight} className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-white">
               <ArrowRightIcon />
             </button>
           </div>
@@ -383,64 +467,64 @@ const HomeScreen = () => {
       </section>
 
       {/* --- 3. Large Banners --- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white mb-32">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white mb-16 md:mb-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Link to="/category/clothing" className="relative h-[700px] w-full overflow-hidden group">
+          <Link to="/category/clothing" className="relative h-[450px] sm:h-[550px] lg:h-[700px] w-full overflow-hidden group">
             <img src="/clothes/8.jpg" alt="Coats" className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105" />
-            <div className="absolute bottom-16 left-10 p-4">
-              <h3 className="text-4xl font-serif uppercase tracking-wider drop-shadow-md ">{t.coatsTitle}</h3>
-              <p className="text-sm uppercase tracking-widest mt-2 hover:underline drop-shadow-md">{t.viewCollection}</p>
+            <div className="absolute bottom-8 left-6 md:bottom-16 md:left-10 p-4">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif uppercase tracking-wider drop-shadow-md ">{t.coatsTitle}</h3>
+              <p className="text-xs sm:text-sm uppercase tracking-widest mt-2 hover:underline drop-shadow-md">{t.viewCollection}</p>
             </div>
           </Link>
-          <Link to="/category/clothing" className="relative h-[700px] w-full overflow-hidden group">
+          <Link to="/category/clothing" className="relative h-[450px] sm:h-[550px] lg:h-[700px] w-full overflow-hidden group">
             <img src="/clothes/9.jpg" alt="Shoes" className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105" />
-            <div className="absolute bottom-16 left-10 p-4">
-              <h3 className="text-4xl font-serif uppercase tracking-wider drop-shadow-md">{t.shoesTitle}</h3>
-              <p className="text-sm uppercase tracking-widest mt-2 hover:underline drop-shadow-md">{t.viewAll}</p>
+            <div className="absolute bottom-8 left-6 md:bottom-16 md:left-10 p-4">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif uppercase tracking-wider drop-shadow-md">{t.shoesTitle}</h3>
+              <p className="text-xs sm:text-sm uppercase tracking-widest mt-2 hover:underline drop-shadow-md">{t.viewAll}</p>
             </div>
           </Link>
         </div>
       </section>
 
       {/* --- 4. Full Width Banner --- */}
-      <section className="w-full h-[800px] relative mb-32 overflow-hidden group">
+      <section className="w-full h-[500px] md:h-[800px] relative mb-16 md:mb-32 overflow-hidden group">
         <img
           src="/clothes/12.jpg"
           alt="Full Width Banner"
           className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white bg-black/30 p-4">
-          <h2 className="text-5xl font-serif mb-6 tracking-wide drop-shadow-lg uppercase">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-4 md:mb-6 tracking-wide drop-shadow-lg uppercase">
             {t.wardrobeTitle}
           </h2>
-          <p className="text-lg max-w-2xl mb-8 drop-shadow-md">
+          <p className="text-sm sm:text-base md:text-lg max-w-2xl mb-6 md:mb-8 drop-shadow-md">
             {t.wardrobeDesc}
           </p>
-          <Link to="/category/clothing" className="bg-white text-black uppercase tracking-widest font-bold text-sm px-10 py-4 hover:bg-gray-200 transition duration-300">
+          <Link to="/category/clothing" className="bg-white text-black uppercase tracking-widest font-bold text-xs sm:text-sm px-8 sm:px-10 py-3 sm:py-4 hover:bg-gray-200 transition duration-300">
             {t.viewCollection}
           </Link>
         </div>
       </section>
 
       {/* --- 5. Editorial Section --- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-32">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {editorialData.map((item, index) => (
             <Link to={item.link} key={index} className="group cursor-pointer block">
-              <div className="relative overflow-hidden mb-6">
+              <div className="relative overflow-hidden mb-4 md:mb-6">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-[500px] object-cover transition duration-500 group-hover:scale-105"
+                  className="w-full h-[380px] sm:h-[450px] md:h-[500px] object-cover transition duration-500 group-hover:scale-105"
                 />
               </div>
-              <h3 className="text-2xl font-serif font-medium mb-3 group-hover:text-gray-700 transition uppercase">
+              <h3 className="text-xl md:text-2xl font-serif font-medium mb-2 md:mb-3 group-hover:text-gray-700 transition uppercase">
                 {item.title}
               </h3>
               <p className="text-sm text-gray-600 mb-4 leading-relaxed">
                 {item.description}
               </p>
-              <span className="text-sm font-bold uppercase tracking-widest border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition">
+              <span className="text-xs md:text-sm font-bold uppercase tracking-widest border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition">
                 {item.linkText}
               </span>
             </Link>
@@ -449,41 +533,42 @@ const HomeScreen = () => {
       </section>
 
       {/* --- 6. 5-Images Accordion --- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 relative mt-40">
-        <div className="absolute -top-24 left-15 z-20 pointer-events-none flex justify-start">
-          <h2 className="text-[5rem] md:text-[10rem] font-serif leading-none text-gray-200">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-20 relative mt-20 md:mt-40">
+        <div className="absolute -top-10 sm:-top-16 md:-top-24 left-4 md:left-15 z-20 pointer-events-none flex justify-start">
+          <h2 className="text-[3.5rem] sm:text-[5rem] md:text-[10rem] font-serif leading-none text-gray-200">
             N.T.Style
           </h2>
         </div>
-        <div className="flex w-full h-[600px] gap-0 overflow-hidden relative z-10">
+        <div className="flex flex-col md:flex-row w-full h-[550px] md:h-[600px] gap-0 overflow-hidden relative z-10">
           {porterStories.map((story, index) => (
             <div
               key={story.id}
-              className={`relative h-full transition-all duration-700 ease-in-out cursor-pointer overflow-hidden
+              className={`relative w-full md:h-full transition-all duration-700 ease-in-out cursor-pointer overflow-hidden
                         ${activeStoryIndex === index ? 'flex-[3]' : 'flex-[1]'}
                       `}
               onMouseEnter={() => setActiveStoryIndex(index)}
+              onClick={() => setActiveStoryIndex(index)}
             >
               <img
                 src={story.image}
                 alt={story.title}
                 className="absolute top-0 left-0 w-full h-full object-cover"
               />
-              <div className={`absolute bottom-10 left-10 text-white transition-opacity duration-500 ${activeStoryIndex === index ? 'opacity-100' : 'opacity-0'}`}>
-                <p className="tracking-widest text-sm mb-2 drop-shadow-md">N.T.Style</p>
-                <h3 className="text-3xl font-serif drop-shadow-md uppercase">{story.title}</h3>
+              <div className={`absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white transition-opacity duration-500 ${activeStoryIndex === index ? 'opacity-100' : 'opacity-0'}`}>
+                <p className="tracking-widest text-xs md:text-sm mb-1 md:mb-2 drop-shadow-md">N.T.Style</p>
+                <h3 className="text-xl md:text-3xl font-serif drop-shadow-md uppercase">{story.title}</h3>
               </div>
             </div>
           ))}
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-start mt-12 border-t border-gray-200 pt-8">
-          <div className="md:w-1/2">
-            <h2 className="text-4xl font-serif mb-4 uppercase">
+        <div className="flex flex-col md:flex-row justify-between items-start mt-8 md:mt-12 border-t border-gray-200 pt-6 md:pt-8 gap-4">
+          <div className="w-full md:w-1/2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif mb-2 md:mb-4 uppercase">
               {t.designerTitle}
             </h2>
           </div>
-          <div className="md:w-1/3">
-            <p className="text-lg text-gray-700 font-serif leading-relaxed mb-6">
+          <div className="w-full md:w-1/3">
+            <p className="text-base md:text-lg text-gray-700 font-serif leading-relaxed mb-6">
               {t.designerDesc}
             </p>
             <Link to="/category/aboutNT" className="text-xs font-bold uppercase tracking-widest border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition">
@@ -494,27 +579,27 @@ const HomeScreen = () => {
       </section>
 
       {/* --- 7. Live & Top Stories (-30% Sale Section) --- */}
-      <section className="pt-20 pb-32 bg-white overflow-hidden">
+      <section className="pt-12 pb-20 md:pt-20 md:pb-32 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif tracking-wide uppercase">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-serif tracking-wide uppercase">
               {t.liveTitle}
             </h2>
-            <p className="text-xs uppercase tracking-widest text-gray-500 mt-3">
+            <p className="text-[11px] md:text-xs uppercase tracking-widest text-gray-500 mt-2 md:mt-3">
               {t.liveDesc}
             </p>
           </div>
 
           <div 
             ref={liveScrollRef} 
-            className="flex overflow-x-hidden whitespace-nowrap -mx-2 mb-16 scrollbar-hide"
+            className="flex overflow-x-hidden whitespace-nowrap -mx-2 mb-12 md:mb-16 scrollbar-hide"
           >
             {[...t.liveProducts, ...t.liveProducts, ...t.liveProducts].map((item, idx) => (
-              <Link to={item.link} key={`live-${idx}`} className="group cursor-pointer inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-4 text-center relative">
+              <Link to={item.link} key={`live-${idx}`} className="group cursor-pointer inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-2 sm:px-4 text-center relative">
                 
-                <div className="relative mb-4 flex justify-center items-center h-64 overflow-hidden bg-white">
-                  <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[11px] font-bold tracking-wider px-2.5 py-1 shadow-sm">
+                <div className="relative mb-3 md:mb-4 flex justify-center items-center h-48 sm:h-56 md:h-64 overflow-hidden bg-white">
+                  <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[10px] sm:text-[11px] font-bold tracking-wider px-2 sm:px-2.5 py-1 shadow-sm">
                     -30%
                   </span>
                   <img 
@@ -525,13 +610,13 @@ const HomeScreen = () => {
                 </div>
 
                 <p className="text-[10px] font-bold uppercase tracking-wider mb-1 text-gray-900">{item.brand}</p>
-                <p className="text-sm font-serif mb-1 text-gray-800">{item.name}</p>
+                <p className="text-xs sm:text-sm font-serif mb-1 text-gray-800 whitespace-normal">{item.name}</p>
                 
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <span className="text-xs text-gray-400 line-through">
                     {getOriginalPrice(item.price)}
                   </span>
-                  <span className="text-sm font-bold text-red-600">
+                  <span className="text-xs sm:text-sm font-bold text-red-600">
                     {item.price}
                   </span>
                 </div>
@@ -542,9 +627,9 @@ const HomeScreen = () => {
             ))}
           </div>
 
-          <div className="w-full border-t border-gray-200 my-16"></div>
+          <div className="w-full border-t border-gray-200 my-10 md:my-16"></div>
 
-          <div className="mb-10">
+          <div className="mb-8 md:mb-10">
             <h3 className="text-[11px] tracking-[0.2em] text-gray-800 uppercase font-semibold text-center sm:text-left">
               {t.topStoriesTitle}
             </h3>
@@ -552,9 +637,9 @@ const HomeScreen = () => {
 
           <div className="flex overflow-x-auto whitespace-nowrap -mx-2 scrollbar-hide">
             {[...t.topStories, ...t.topStories, ...t.topStories].map((story, idx) => (
-              <Link to={story.link} key={`story-${idx}`} className="inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-4 cursor-pointer group">
-                <div className="relative overflow-hidden mb-4 aspect-[3/4] w-full">
-                  <span className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[11px] font-bold tracking-wider px-2.5 py-1 shadow-sm">
+              <Link to={story.link} key={`story-${idx}`} className="inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-2 sm:px-4 cursor-pointer group">
+                <div className="relative overflow-hidden mb-3 md:mb-4 aspect-[3/4] w-full">
+                  <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-red-600 text-white text-[10px] sm:text-[11px] font-bold tracking-wider px-2 sm:px-2.5 py-1 shadow-sm">
                     -30%
                   </span>
                   <img 
@@ -566,7 +651,7 @@ const HomeScreen = () => {
                 <p className="text-[10px] tracking-[0.15em] text-gray-500 uppercase mb-1 font-semibold">
                   {story.category}
                 </p>
-                <h4 className="text-[14px] font-serif text-gray-900 leading-snug whitespace-normal mb-1.5">
+                <h4 className="text-[13px] sm:text-[14px] font-serif text-gray-900 leading-snug whitespace-normal mb-1.5">
                   {story.title}
                 </h4>
                 {story.price && (
@@ -574,7 +659,7 @@ const HomeScreen = () => {
                     <span className="text-xs text-gray-400 line-through">
                       {getOriginalPrice(story.price)}
                     </span>
-                    <span className="text-sm font-bold text-red-600">
+                    <span className="text-xs sm:text-sm font-bold text-red-600">
                       {story.price}
                     </span>
                   </div>
