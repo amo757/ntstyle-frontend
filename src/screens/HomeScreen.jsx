@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext.jsx';
 
-const IMAGE_URL = "/blackfriday2026.jpg"; 
+const IMAGE_URL = "/blackfriday2026.jpg";
 
 // --- საწყისი (გადახაზული) ფასის გამოთვლა 30%-იანი ფასდაკლების მიხედვით ---
 const getOriginalPrice = (priceStr) => {
@@ -16,9 +16,6 @@ const getOriginalPrice = (priceStr) => {
 // --- თარგმანები და სრული მონაცემები ---
 const translations = {
   ge: {
-    menuHome: "მთავარი",
-    menuClothing: "ტანსაცმელი",
-    menuAbout: "ბრენდის შესახებ",
     heroTitle: "დღესასწაულები იწყება N.T. STYLE-თან ერთად",
     heroDesc: "დროა შექმნათ თქვენი სადღესასწაულო გარდერობი, შთამბეჭდავი კაბებიდან დაწყებული გამორჩეული აქსესუარებით დამთავრებული.",
     heroBtn: "იხილეთ წვეულების კოლექცია",
@@ -68,7 +65,7 @@ const translations = {
       { brand: 'N.T.style', name: 'ბეწვის ქურთუკი', location: 'თბილისი, GE', image: '/clothes/good/4 17 შავი ბეწვიანი.jpg', link: '/product/4', price: '229 ₾' },
       { brand: 'N.T.style', name: 'პალტო', location: 'თბილისი, GE', image: '/clothes/good/5 15 პალტო.jpg', link: '/product/5', price: '229 ₾' },
       { brand: 'N.T.style', name: 'ბეწვიანი ჟილეტი', location: 'თბილისი, GE', image: '/clothes/good/6 17 შავი ბეწვიანი ჟილეტი.jpg', link: '/product/6', price: '159 ₾' },
-      { brand: 'N.T.style', name: 'ვარდიანი კოსტუმი', location: 'თბილისი, GE', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '289 ₾' }, 
+      { brand: 'N.T.style', name: 'ვარდიანი კოსტუმი', location: 'თბილისი, GE', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/product/7', price: '289 ₾' },
     ],
     topStories: [
       { category: 'შავი', title: 'ვარდიანი კოსტუმი', image: '/clothes/good/7 16 ვარდიანი შავი.jpg', link: '/story/1', price: '289 ₾' },
@@ -79,9 +76,6 @@ const translations = {
     ]
   },
   en: {
-    menuHome: "Home",
-    menuClothing: "Clothing",
-    menuAbout: "About N.T. Style",
     heroTitle: "HOLIDAYS START WITH N.T. STYLE",
     heroDesc: "Time to build your holiday wardrobe, from impressive dresses to standout accessories.",
     heroBtn: "VIEW PARTY EDIT",
@@ -142,9 +136,6 @@ const translations = {
     ]
   },
   ru: {
-    menuHome: "Главная",
-    menuClothing: "Одежда",
-    menuAbout: "О бренде",
     heroTitle: "ПРАЗДНИКИ НАЧИНАЮТСЯ С N.T. STYLE",
     heroDesc: "Время создать свой праздничный гардероб, от впечатляющих платьев до выдающихся аксессуаров.",
     heroBtn: "СМОТРЕТЬ ВЕЧЕРНЮЮ КОЛЛЕКЦИЮ",
@@ -219,18 +210,6 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
-const BurgerIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-7 h-7">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-7 h-7">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-  </svg>
-);
-
 // --- Custom Smooth Scroll Function ---
 const smoothScrollTo = (element, targetScrollLeft, duration) => {
   const startScrollLeft = element.scrollLeft;
@@ -243,14 +222,14 @@ const smoothScrollTo = (element, targetScrollLeft, duration) => {
     if (startTime === null) startTime = currentTime;
     const timeElapsed = currentTime - startTime;
     const progress = Math.min(timeElapsed / duration, 1);
-    
+
     element.scrollLeft = startScrollLeft + distance * easeInOutQuad(progress);
-    
+
     if (timeElapsed < duration) {
       requestAnimationFrame(animation);
     }
   };
-  
+
   requestAnimationFrame(animation);
 };
 
@@ -260,8 +239,6 @@ const HomeScreen = () => {
 
   const scrollContainerRef = useRef(null);
   const liveScrollRef = useRef(null);
-  const [activeStoryIndex, setActiveStoryIndex] = useState(2);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const editorialData = [
     {
@@ -291,9 +268,9 @@ const HomeScreen = () => {
     if (scrollContainerRef.current) {
       const el = scrollContainerRef.current;
       if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 50) {
-        smoothScrollTo(el, 0, 1500); 
+        smoothScrollTo(el, 0, 1500);
       } else {
-        smoothScrollTo(el, el.scrollLeft + 300, 1500); 
+        smoothScrollTo(el, el.scrollLeft + 300, 1500);
       }
     }
   };
@@ -301,7 +278,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       scrollRight();
-    }, 3000); 
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -310,91 +287,29 @@ const HomeScreen = () => {
 
     const intervalId = setInterval(() => {
       const elements = [liveElement];
-      
+
       elements.forEach(el => {
         if (!el) return;
-        
+
         const visibleItems = window.innerWidth >= 1024 ? 5 : window.innerWidth >= 768 ? 4 : window.innerWidth >= 640 ? 3 : 2;
-        const scrollAmount = el.offsetWidth / visibleItems; 
+        const scrollAmount = el.offsetWidth / visibleItems;
 
         if (el.scrollLeft >= el.scrollWidth / 2) {
-          el.scrollLeft = 0; 
+          el.scrollLeft = 0;
           requestAnimationFrame(() => {
-            smoothScrollTo(el, scrollAmount, 1500); 
+            smoothScrollTo(el, scrollAmount, 1500);
           });
         } else {
           smoothScrollTo(el, el.scrollLeft + scrollAmount, 1500);
         }
       });
-    }, 3000); 
+    }, 3000);
 
     return () => clearInterval(intervalId);
   }, []);
 
   return (
     <div className="w-full overflow-x-hidden">
-
-      {/* --- მობილური ჰედერი ბურგერ მენიუთი (მხოლოდ მობილურზე) --- */}
-      <div className="md:hidden sticky top-0 z-40 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <button
-          onClick={() => setIsMobileMenuOpen(true)}
-          aria-label="Open menu"
-          className="text-black p-1 focus:outline-none"
-        >
-          <BurgerIcon />
-        </button>
-        <Link to="/" className="text-lg font-serif tracking-widest uppercase text-black">
-          N.T. STYLE
-        </Link>
-        <div className="w-8" />
-      </div>
-
-      {/* --- მობილური ბურგერ მენიუს პანელი (Drawer) --- */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex">
-          <div
-            className="fixed inset-0 bg-black/50"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col p-6 z-10">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-              <span className="text-lg font-serif tracking-widest uppercase text-black">
-                N.T. STYLE
-              </span>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Close menu"
-                className="text-black p-1"
-              >
-                <CloseIcon />
-              </button>
-            </div>
-            <nav className="flex flex-col space-y-5">
-              <Link
-                to="/"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-sm uppercase tracking-widest font-semibold text-gray-900 hover:text-gray-500"
-              >
-                {t.menuHome}
-              </Link>
-              <Link
-                to="/category/clothing"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-sm uppercase tracking-widest font-bold text-black border-b border-gray-100 pb-3 hover:text-gray-600"
-              >
-                {t.menuClothing}
-              </Link>
-              <Link
-                to="/category/aboutNT"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-sm uppercase tracking-widest font-semibold text-gray-900 hover:text-gray-500"
-              >
-                {t.menuAbout}
-              </Link>
-            </nav>
-          </div>
-        </div>
-      )}
 
       {/* --- 1. Hero Section --- */}
       <section className="relative h-[75vh] md:h-[calc(100vh-160px)] w-full overflow-hidden bg-black">
@@ -472,7 +387,7 @@ const HomeScreen = () => {
           <Link to="/category/clothing" className="relative h-[450px] sm:h-[550px] lg:h-[700px] w-full overflow-hidden group">
             <img src="/clothes/8.jpg" alt="Coats" className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105" />
             <div className="absolute bottom-8 left-6 md:bottom-16 md:left-10 p-4">
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif uppercase tracking-wider drop-shadow-md ">{t.coatsTitle}</h3>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif uppercase tracking-wider drop-shadow-md">{t.coatsTitle}</h3>
               <p className="text-xs sm:text-sm uppercase tracking-widest mt-2 hover:underline drop-shadow-md">{t.viewCollection}</p>
             </div>
           </Link>
@@ -515,7 +430,7 @@ const HomeScreen = () => {
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-[380px] sm:h-[450px] md:h-[500px] object-cover transition duration-500 group-hover:scale-105"
+                  className="w-full h-[380px] sm:h-[450px] md:h-[500px] object-cover object-top transition duration-500 group-hover:scale-105"
                 />
               </div>
               <h3 className="text-xl md:text-2xl font-serif font-medium mb-2 md:mb-3 group-hover:text-gray-700 transition uppercase">
@@ -532,35 +447,39 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      {/* --- 6. 5-Images Accordion --- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-20 relative mt-20 md:mt-40">
-        <div className="absolute -top-10 sm:-top-16 md:-top-24 left-4 md:left-15 z-20 pointer-events-none flex justify-start">
-          <h2 className="text-[3.5rem] sm:text-[5rem] md:text-[10rem] font-serif leading-none text-gray-200">
+      {/* --- 6. N.T. Style Gallery Grid (Fixed for Mobile & Desktop) --- */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-24 mt-12 md:mt-24">
+        <div className="mb-4 md:mb-6">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl font-serif leading-none text-gray-200 select-none">
             N.T.Style
           </h2>
         </div>
-        <div className="flex flex-col md:flex-row w-full h-[550px] md:h-[600px] gap-0 overflow-hidden relative z-10">
-          {porterStories.map((story, index) => (
-            <div
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+          {porterStories.map((story) => (
+            <Link
+              to="/category/clothing"
               key={story.id}
-              className={`relative w-full md:h-full transition-all duration-700 ease-in-out cursor-pointer overflow-hidden
-                        ${activeStoryIndex === index ? 'flex-[3]' : 'flex-[1]'}
-                      `}
-              onMouseEnter={() => setActiveStoryIndex(index)}
-              onClick={() => setActiveStoryIndex(index)}
+              className="relative aspect-[3/4] w-full overflow-hidden group block bg-gray-100"
             >
               <img
                 src={story.image}
                 alt={story.title}
-                className="absolute top-0 left-0 w-full h-full object-cover"
+                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
               />
-              <div className={`absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white transition-opacity duration-500 ${activeStoryIndex === index ? 'opacity-100' : 'opacity-0'}`}>
-                <p className="tracking-widest text-xs md:text-sm mb-1 md:mb-2 drop-shadow-md">N.T.Style</p>
-                <h3 className="text-xl md:text-3xl font-serif drop-shadow-md uppercase">{story.title}</h3>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 text-white">
+                <p className="tracking-widest text-[10px] sm:text-xs uppercase opacity-90 mb-0.5">
+                  N.T.Style
+                </p>
+                <h3 className="text-sm sm:text-lg md:text-xl font-serif uppercase leading-snug">
+                  {story.title}
+                </h3>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
+
         <div className="flex flex-col md:flex-row justify-between items-start mt-8 md:mt-12 border-t border-gray-200 pt-6 md:pt-8 gap-4">
           <div className="w-full md:w-1/2">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif mb-2 md:mb-4 uppercase">
@@ -581,7 +500,7 @@ const HomeScreen = () => {
       {/* --- 7. Live & Top Stories (-30% Sale Section) --- */}
       <section className="pt-12 pb-20 md:pt-20 md:pb-32 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-2xl md:text-3xl font-serif tracking-wide uppercase">
               {t.liveTitle}
@@ -591,27 +510,27 @@ const HomeScreen = () => {
             </p>
           </div>
 
-          <div 
-            ref={liveScrollRef} 
+          <div
+            ref={liveScrollRef}
             className="flex overflow-x-hidden whitespace-nowrap -mx-2 mb-12 md:mb-16 scrollbar-hide"
           >
             {[...t.liveProducts, ...t.liveProducts, ...t.liveProducts].map((item, idx) => (
               <Link to={item.link} key={`live-${idx}`} className="group cursor-pointer inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-shrink-0 px-2 sm:px-4 text-center relative">
-                
+
                 <div className="relative mb-3 md:mb-4 flex justify-center items-center h-48 sm:h-56 md:h-64 overflow-hidden bg-white">
                   <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[10px] sm:text-[11px] font-bold tracking-wider px-2 sm:px-2.5 py-1 shadow-sm">
                     -30%
                   </span>
-                  <img 
-                    src={item.image} 
-                    alt={item.name} 
-                    className="h-full w-full object-contain mix-blend-multiply transition-opacity duration-700 group-hover:opacity-75" 
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="h-full w-full object-contain mix-blend-multiply transition-opacity duration-700 group-hover:opacity-75"
                   />
                 </div>
 
                 <p className="text-[10px] font-bold uppercase tracking-wider mb-1 text-gray-900">{item.brand}</p>
                 <p className="text-xs sm:text-sm font-serif mb-1 text-gray-800 whitespace-normal">{item.name}</p>
-                
+
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <span className="text-xs text-gray-400 line-through">
                     {getOriginalPrice(item.price)}
@@ -642,10 +561,10 @@ const HomeScreen = () => {
                   <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-red-600 text-white text-[10px] sm:text-[11px] font-bold tracking-wider px-2 sm:px-2.5 py-1 shadow-sm">
                     -30%
                   </span>
-                  <img 
-                    src={story.image} 
-                    alt={story.title} 
-                    className="w-full h-full object-cover transition-opacity duration-700 group-hover:opacity-75" 
+                  <img
+                    src={story.image}
+                    alt={story.title}
+                    className="w-full h-full object-cover object-top transition-opacity duration-700 group-hover:opacity-75"
                   />
                 </div>
                 <p className="text-[10px] tracking-[0.15em] text-gray-500 uppercase mb-1 font-semibold">
