@@ -11,6 +11,7 @@ const translations = {
     subtitle: "შექმენი შენი ოცნების გარდერობი ორიგინალური არჩევანით.",
     filter_btn: "ფილტრი",
     results: "შედეგები",
+    show_results: "შედეგების ნახვა",
     
     // Sort Options
     sort_recommended: "სორტირება",
@@ -42,6 +43,7 @@ const translations = {
     subtitle: "Create your dream wardrobe with original choices.",
     filter_btn: "Filter",
     results: "Results",
+    show_results: "Show Results",
     
     sort_recommended: "Recommended",
     sort_new: "New In",
@@ -68,6 +70,7 @@ const translations = {
     subtitle: "Создайте гардероб своей мечты с оригинальным выбором.",
     filter_btn: "Фильтр",
     results: "Результаты",
+    show_results: "Показать результаты",
     
     sort_recommended: "Рекомендуемые",
     sort_new: "Новинки",
@@ -97,7 +100,7 @@ const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL'];
 
 // --- ICONS ---
 const FilterIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
         <circle cx="12" cy="12" r="10" strokeWidth="1.5" />
         <path d="M8 12H16" strokeWidth="1.5" />
     </svg>
@@ -106,7 +109,7 @@ const FilterIcon = () => (
 const HeartIcon = ({ filled, onClick }) => (
     <button
         onClick={onClick}
-        className="absolute top-3 right-3 z-20 focus:outline-none transform transition duration-200 active:scale-90 bg-white/80 p-2 rounded-full hover:bg-white shadow-sm"
+        className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 focus:outline-none transform transition duration-200 active:scale-90 bg-white/80 p-1.5 sm:p-2 rounded-full hover:bg-white shadow-sm"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +117,7 @@ const HeartIcon = ({ filled, onClick }) => (
             viewBox="0 0 24 24"
             strokeWidth={1.2}
             stroke="currentColor"
-            className={`w-5 h-5 transition duration-300 ${filled ? 'text-black' : 'text-gray-600'}`}
+            className={`w-4 h-4 sm:w-5 sm:h-5 transition duration-300 ${filled ? 'text-black' : 'text-gray-600'}`}
         >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
         </svg>
@@ -123,7 +126,7 @@ const HeartIcon = ({ filled, onClick }) => (
 
 // --- COMPONENTS ---
 const Checkbox = ({ label, checked, onChange }) => (
-    <div onClick={onChange} className="flex items-center space-x-3 cursor-pointer group py-1">
+    <div onClick={onChange} className="flex items-center space-x-3 cursor-pointer group py-1.5 sm:py-1">
         <div className={`w-4 h-4 border border-gray-300 flex items-center justify-center transition flex-shrink-0 ${checked ? 'bg-black border-black' : 'bg-white group-hover:border-gray-500'}`}>
             {checked && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
         </div>
@@ -132,7 +135,7 @@ const Checkbox = ({ label, checked, onChange }) => (
 );
 
 const FilterSection = ({ title, isOpen, toggle, children, onClear, hasSelection, clearText }) => (
-    <div className="border-b border-gray-200 py-5">
+    <div className="border-b border-gray-200 py-4 sm:py-5">
         <button onClick={toggle} className="flex justify-between items-center w-full text-left group mb-2">
             <span className="text-[12px] font-bold uppercase tracking-wider text-black">{title}</span>
             <span className={`transform transition-transform duration-300 text-gray-500 ${isOpen ? 'rotate-180' : 'rotate-0'}`}>
@@ -154,8 +157,8 @@ const FilterSection = ({ title, isOpen, toggle, children, onClear, hasSelection,
 
 const ProductSkeleton = () => (
     <div className="flex flex-col animate-pulse">
-        <div className="w-full aspect-[3/4] bg-[#F5F5F5] flex items-center justify-center mb-4">
-            <span className="text-gray-300 font-serif tracking-[0.2em] text-xs uppercase">N.T. STYLE</span>
+        <div className="w-full aspect-[3/4] bg-[#F5F5F5] flex items-center justify-center mb-3 sm:mb-4">
+            <span className="text-gray-300 font-serif tracking-[0.2em] text-[10px] sm:text-xs uppercase">N.T. STYLE</span>
         </div>
         <div className="h-2 bg-[#F5F5F5] w-2/3 mb-2"></div>
         <div className="h-2 bg-[#F5F5F5] w-full mb-2"></div>
@@ -187,6 +190,16 @@ const ClothingScreen = () => {
 
     const [currentSort, setCurrentSort] = useState(t.sort_recommended);
     const { toggleWishlist, isInWishlist } = useWishlist();
+
+    // Lock body scroll on mobile when filter drawer is open
+    useEffect(() => {
+        if (isFilterOpen && window.innerWidth < 1024) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isFilterOpen]);
 
     // 1. DATA FETCHING
     useEffect(() => {
@@ -316,6 +329,103 @@ const ClothingScreen = () => {
         ? ((priceRange[1] - priceBounds.min) / (priceBounds.max - priceBounds.min)) * 100 
         : 100;
 
+    // ფილტრების შიგთავსი (გამოიყენება როგორც მობილურ Drawer-ში, ისე დესკტოპ Sidebar-ში)
+    const filterContent = (
+        <>
+            {/* 1. დასახელებებით ფილტრი */}
+            <FilterSection 
+                title={t.product_name_title}
+                isOpen={openSections.name} 
+                toggle={() => toggleSection('name')} 
+                onClear={() => setSelectedNames([])} 
+                hasSelection={selectedNames.length > 0}
+                clearText={t.unselect_all}
+            >
+                <div className="max-h-60 overflow-y-auto scrollbar-thin pr-2 space-y-1">
+                    {uniqueProductNames.map(name => (
+                        <Checkbox 
+                            key={name} 
+                            label={name} 
+                            checked={selectedNames.includes(name)} 
+                            onChange={() => handleNameChange(name)} 
+                        />
+                    ))}
+                </div>
+            </FilterSection>
+
+            {/* 2. ფასის რეგულირებადი სლაიდერი */}
+            <FilterSection 
+                title={t.price_title}
+                isOpen={openSections.price} 
+                toggle={() => toggleSection('price')} 
+                onClear={() => setPriceRange([priceBounds.min, priceBounds.max])} 
+                hasSelection={isPriceFiltered}
+                clearText={t.unselect_all}
+            >
+                <div className="px-1 pt-2 pb-3">
+                    <div className="flex items-center justify-between text-[13px] font-medium text-black mb-5">
+                        <span className="border border-gray-200 px-2.5 py-1 bg-gray-50">
+                            {priceRange[0]} {t.currency}
+                        </span>
+                        <span className="text-gray-400">—</span>
+                        <span className="border border-gray-200 px-2.5 py-1 bg-gray-50">
+                            {priceRange[1]} {t.currency}
+                        </span>
+                    </div>
+
+                    <div className="relative h-6 flex items-center touch-none">
+                        <div className="relative w-full h-1 bg-gray-200 rounded">
+                            <div 
+                                className="absolute h-1 bg-black rounded"
+                                style={{
+                                    left: `${minPercent}%`,
+                                    width: `${maxPercent - minPercent}%`
+                                }}
+                            />
+                        </div>
+                        <input
+                            type="range"
+                            min={priceBounds.min}
+                            max={priceBounds.max}
+                            value={priceRange[0]}
+                            onChange={handleMinPriceSlider}
+                            className="range-slider-input z-20"
+                        />
+                        <input
+                            type="range"
+                            min={priceBounds.min}
+                            max={priceBounds.max}
+                            value={priceRange[1]}
+                            onChange={handleMaxPriceSlider}
+                            className="range-slider-input z-30"
+                        />
+                    </div>
+                </div>
+            </FilterSection>
+
+            {/* 3. ზომებით ფილტრი */}
+            <FilterSection 
+                title={t.size_title}
+                isOpen={openSections.size} 
+                toggle={() => toggleSection('size')} 
+                onClear={() => setSelectedSizes([])} 
+                hasSelection={selectedSizes.length > 0}
+                clearText={t.unselect_all}
+            >
+                <div className="grid grid-cols-2 gap-1">
+                    {SIZES.map(size => (
+                        <Checkbox 
+                            key={size} 
+                            label={size} 
+                            checked={selectedSizes.includes(size)} 
+                            onChange={() => handleSizeChange(size)} 
+                        />
+                    ))}
+                </div>
+            </FilterSection>
+        </>
+    );
+
     return (
         <div className="bg-white min-h-screen w-full font-sans">
             <style>
@@ -335,20 +445,20 @@ const ClothingScreen = () => {
                     }
                     .range-slider-input::-webkit-slider-thumb {
                         pointer-events: all;
-                        width: 16px;
-                        height: 16px;
+                        width: 18px;
+                        height: 18px;
                         border-radius: 50%;
                         background-color: #000000;
                         border: 2px solid #ffffff;
                         box-shadow: 0 1px 4px rgba(0,0,0,0.4);
                         cursor: pointer;
                         -webkit-appearance: none;
-                        margin-top: -6px;
+                        margin-top: -7px;
                     }
                     .range-slider-input::-moz-range-thumb {
                         pointer-events: all;
-                        width: 16px;
-                        height: 16px;
+                        width: 18px;
+                        height: 18px;
                         border-radius: 50%;
                         background-color: #000000;
                         border: 2px solid #ffffff;
@@ -358,35 +468,44 @@ const ClothingScreen = () => {
                 `}
             </style>
 
-            {/* HEADER - ზემოთ აწეული და დაბალანსებული */}
-            <div className="w-full flex flex-col items-center justify-center py-5 md:py-6 px-4">
-                <h1 className="text-[28px] md:text-[36px] mb-1.5 text-black leading-tight" style={{ fontFamily: '"Playfair Display", serif' }}>
+            {/* HEADER */}
+            <div className="w-full flex flex-col items-center justify-center py-4 sm:py-5 md:py-6 px-4">
+                <h1 className="text-[24px] sm:text-[28px] md:text-[36px] mb-1.5 text-black leading-tight text-center" style={{ fontFamily: '"Playfair Display", serif' }}>
                     {t.title}
                 </h1>
-                <p className="text-[13px] md:text-[14px] text-gray-600 leading-snug max-w-2xl text-center font-light tracking-wide">
+                <p className="text-[12px] sm:text-[13px] md:text-[14px] text-gray-600 leading-snug max-w-2xl text-center font-light tracking-wide">
                     {t.subtitle}
                 </p>
             </div>
 
             {/* MAIN CONTAINER */}
-            <div className="w-full px-6 md:px-10 pb-0 border-t border-gray-200">
+            <div className="w-full px-3 sm:px-6 md:px-10 pb-0 border-t border-gray-200">
 
                 {/* CONTROL BAR */}
-                <div className="flex justify-between items-center py-5 bg-white sticky top-0 z-30">
-                    <button onClick={() => setIsFilterOpen(!isFilterOpen)} className={`flex items-center px-5 py-3 transition bg-white border ${isFilterOpen ? 'border-black' : 'border-gray-300 hover:border-black'}`}>
+                <div className="flex justify-between items-center gap-2 sm:gap-4 py-3 sm:py-5 bg-white sticky top-0 z-30">
+                    <button
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        className={`flex-1 sm:flex-initial flex items-center justify-center sm:justify-start px-3 py-2.5 sm:px-5 sm:py-3 transition bg-white border ${isFilterOpen ? 'border-black' : 'border-gray-300 hover:border-black'}`}
+                    >
                         <FilterIcon />
-                        <span className="ml-3 mr-3 text-[12px] font-bold uppercase tracking-[0.1em]">{t.filter_btn}</span>
-                        <span className="text-gray-300 mr-3 font-light">|</span>
-                        <span className="text-[12px] text-gray-500 font-medium">{filteredProducts.length} {t.results}</span>
+                        <span className="ml-2 sm:ml-3 sm:mr-3 text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.08em] sm:tracking-[0.1em]">{t.filter_btn}</span>
+                        <span className="hidden sm:inline text-gray-300 mr-3 font-light">|</span>
+                        <span className="ml-1.5 sm:ml-0 text-[11px] sm:text-[12px] text-gray-500 font-medium">
+                            <span className="sm:hidden">({filteredProducts.length})</span>
+                            <span className="hidden sm:inline">{filteredProducts.length} {t.results}</span>
+                        </span>
                     </button>
 
-                    <div className="relative">
-                        <button onClick={() => setIsSortOpen(!isSortOpen)} className="flex items-center justify-between border border-gray-300 px-4 py-3 hover:border-black transition bg-white min-w-[200px]">
-                            <span className="text-[12px] font-medium uppercase tracking-wider">{currentSort}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className={`w-4 h-4 transition-transform ${isSortOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                    <div className="relative flex-1 sm:flex-initial">
+                        <button
+                            onClick={() => setIsSortOpen(!isSortOpen)}
+                            className="w-full flex items-center justify-between border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 hover:border-black transition bg-white sm:min-w-[200px]"
+                        >
+                            <span className="text-[11px] sm:text-[12px] font-medium uppercase tracking-wider truncate mr-2">{currentSort}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className={`w-4 h-4 flex-shrink-0 transition-transform ${isSortOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                         </button>
                         {isSortOpen && (
-                            <div className="absolute right-0 top-full mt-[-1px] w-64 bg-white border border-black shadow-none z-40">
+                            <div className="absolute right-0 top-full mt-[-1px] w-full sm:w-64 bg-white border border-black shadow-lg sm:shadow-none z-40">
                                 {[t.sort_recommended, t.sort_new, t.sort_price_low, t.sort_price_high].map((option) => (
                                     <button key={option} onClick={() => handleSortChange(option)} className={`block w-full text-left px-4 py-3 text-[12px] hover:bg-gray-50 transition ${currentSort === option ? 'font-bold text-black' : 'text-gray-600'}`}>{option}</button>
                                 ))}
@@ -395,108 +514,63 @@ const ClothingScreen = () => {
                     </div>
                 </div>
 
+                {/* MOBILE FILTER DRAWER (< lg) */}
+                {isFilterOpen && (
+                    <div className="fixed inset-0 z-50 lg:hidden flex">
+                        {/* Backdrop */}
+                        <div
+                            className="fixed inset-0 bg-black/40 transition-opacity"
+                            onClick={() => setIsFilterOpen(false)}
+                        />
+                        {/* Drawer Panel */}
+                        <div className="relative w-full max-w-[320px] bg-white h-full flex flex-col z-10 shadow-xl">
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+                                <span className="text-[13px] font-bold uppercase tracking-[0.12em] text-black">
+                                    {t.filter_btn} ({filteredProducts.length})
+                                </span>
+                                <button
+                                    onClick={() => setIsFilterOpen(false)}
+                                    className="p-1 text-gray-600 hover:text-black"
+                                    aria-label="Close filters"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto px-5">
+                                {filterContent}
+                            </div>
+
+                            <div className="p-4 border-t border-gray-200 bg-white flex gap-3">
+                                {(selectedNames.length > 0 || isPriceFiltered || selectedSizes.length > 0) && (
+                                    <button
+                                        onClick={clearAllFilters}
+                                        className="px-4 py-3 border border-gray-300 text-[12px] font-medium uppercase tracking-wider text-gray-700 hover:border-black"
+                                    >
+                                        {t.clear_all}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setIsFilterOpen(false)}
+                                    className="flex-1 py-3 bg-black text-white text-[12px] font-bold uppercase tracking-wider hover:bg-gray-900 transition"
+                                >
+                                    {t.show_results} ({filteredProducts.length})
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* CONTENT AREA */}
                 <div className="flex items-start relative transition-all duration-500 min-h-[600px]">
 
-                    {/* SIDEBAR */}
-                    <div className={`flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${isFilterOpen ? 'w-64 opacity-100 mr-12' : 'w-0 opacity-0 mr-0'}`}>
+                    {/* DESKTOP SIDEBAR (lg+) */}
+                    <div className={`hidden lg:block flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${isFilterOpen ? 'w-64 opacity-100 mr-12' : 'w-0 opacity-0 mr-0'}`}>
                         <div className="w-64 pt-2 border-t border-gray-200">
                             <div className="sticky top-28">
-                                
-                                {/* 1. დასახელებებით ფილტრი */}
-                                <FilterSection 
-                                    title={t.product_name_title}
-                                    isOpen={openSections.name} 
-                                    toggle={() => toggleSection('name')} 
-                                    onClear={() => setSelectedNames([])} 
-                                    hasSelection={selectedNames.length > 0}
-                                    clearText={t.unselect_all}
-                                >
-                                    <div className="max-h-60 overflow-y-auto scrollbar-thin pr-2 space-y-1">
-                                        {uniqueProductNames.map(name => (
-                                            <Checkbox 
-                                                key={name} 
-                                                label={name} 
-                                                checked={selectedNames.includes(name)} 
-                                                onChange={() => handleNameChange(name)} 
-                                            />
-                                        ))}
-                                    </div>
-                                </FilterSection>
-
-                                {/* 2. ფასის რეგულირებადი სლაიდერი */}
-                                <FilterSection 
-                                    title={t.price_title}
-                                    isOpen={openSections.price} 
-                                    toggle={() => toggleSection('price')} 
-                                    onClear={() => setPriceRange([priceBounds.min, priceBounds.max])} 
-                                    hasSelection={isPriceFiltered}
-                                    clearText={t.unselect_all}
-                                >
-                                    <div className="px-1 pt-2 pb-3">
-                                        {/* არჩეული ფასების ჩვენება */}
-                                        <div className="flex items-center justify-between text-[13px] font-medium text-black mb-5">
-                                            <span className="border border-gray-200 px-2.5 py-1 bg-gray-50">
-                                                {priceRange[0]} {t.currency}
-                                            </span>
-                                            <span className="text-gray-400">—</span>
-                                            <span className="border border-gray-200 px-2.5 py-1 bg-gray-50">
-                                                {priceRange[1]} {t.currency}
-                                            </span>
-                                        </div>
-
-                                        {/* სლაიდერის ზოლი */}
-                                        <div className="relative h-6 flex items-center">
-                                            <div className="relative w-full h-1 bg-gray-200 rounded">
-                                                <div 
-                                                    className="absolute h-1 bg-black rounded"
-                                                    style={{
-                                                        left: `${minPercent}%`,
-                                                        width: `${maxPercent - minPercent}%`
-                                                    }}
-                                                />
-                                            </div>
-                                            <input
-                                                type="range"
-                                                min={priceBounds.min}
-                                                max={priceBounds.max}
-                                                value={priceRange[0]}
-                                                onChange={handleMinPriceSlider}
-                                                className="range-slider-input z-20"
-                                            />
-                                            <input
-                                                type="range"
-                                                min={priceBounds.min}
-                                                max={priceBounds.max}
-                                                value={priceRange[1]}
-                                                onChange={handleMaxPriceSlider}
-                                                className="range-slider-input z-30"
-                                            />
-                                        </div>
-                                    </div>
-                                </FilterSection>
-
-                                {/* 3. ზომებით ფილტრი */}
-                                <FilterSection 
-                                    title={t.size_title}
-                                    isOpen={openSections.size} 
-                                    toggle={() => toggleSection('size')} 
-                                    onClear={() => setSelectedSizes([])} 
-                                    hasSelection={selectedSizes.length > 0}
-                                    clearText={t.unselect_all}
-                                >
-                                    <div className="grid grid-cols-2 gap-1">
-                                        {SIZES.map(size => (
-                                            <Checkbox 
-                                                key={size} 
-                                                label={size} 
-                                                checked={selectedSizes.includes(size)} 
-                                                onChange={() => handleSizeChange(size)} 
-                                            />
-                                        ))}
-                                    </div>
-                                </FilterSection>
-
+                                {filterContent}
                             </div>
                         </div>
                     </div>
@@ -506,62 +580,62 @@ const ClothingScreen = () => {
 
                         {/* ACTIVE FILTERS */}
                         {(selectedNames.length > 0 || isPriceFiltered || selectedSizes.length > 0) && (
-                            <div className="flex flex-wrap gap-3 mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 sm:mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
                                 {selectedNames.map(item => (
-                                    <button key={item} onClick={() => handleNameChange(item)} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-2.5 transition group min-w-[110px]">
-                                        <span className="text-[13px] text-gray-800 group-hover:text-black">{item}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-4 h-4 text-gray-500 ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    <button key={item} onClick={() => handleNameChange(item)} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-3 py-1.5 sm:px-4 sm:py-2.5 transition group">
+                                        <span className="text-[12px] sm:text-[13px] text-gray-800 group-hover:text-black">{item}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 ml-2 sm:ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
                                 ))}
 
                                 {isPriceFiltered && (
-                                    <button onClick={() => setPriceRange([priceBounds.min, priceBounds.max])} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-2.5 transition group">
-                                        <span className="text-[13px] text-gray-800 group-hover:text-black">{priceRange[0]} {t.currency} - {priceRange[1]} {t.currency}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-4 h-4 text-gray-500 ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    <button onClick={() => setPriceRange([priceBounds.min, priceBounds.max])} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-3 py-1.5 sm:px-4 sm:py-2.5 transition group">
+                                        <span className="text-[12px] sm:text-[13px] text-gray-800 group-hover:text-black">{priceRange[0]} {t.currency} - {priceRange[1]} {t.currency}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 ml-2 sm:ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
                                 )}
 
                                 {selectedSizes.map(item => (
-                                    <button key={item} onClick={() => handleSizeChange(item)} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-4 py-2.5 transition group min-w-[90px]">
-                                        <span className="text-[13px] text-gray-800 group-hover:text-black">{item}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-4 h-4 text-gray-500 ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    <button key={item} onClick={() => handleSizeChange(item)} className="flex items-center justify-between border border-gray-300 hover:border-black bg-white px-3 py-1.5 sm:px-4 sm:py-2.5 transition group">
+                                        <span className="text-[12px] sm:text-[13px] text-gray-800 group-hover:text-black">{item}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 ml-2 sm:ml-3 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
                                 ))}
 
-                                <button onClick={clearAllFilters} className="text-[12px] underline text-gray-500 hover:text-black underline-offset-4 ml-2">{t.clear_all}</button>
+                                <button onClick={clearAllFilters} className="text-[12px] underline text-gray-500 hover:text-black underline-offset-4 ml-1 sm:ml-2">{t.clear_all}</button>
                             </div>
                         )}
 
                         {/* GRID */}
                         {(initialLoading || isSorting) ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-12">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-12">
                                 {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-12">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-12">
                                 {currentItems.map((product) => (
                                     <div key={product._id} className="group flex flex-col relative cursor-pointer">
-                                        <div className="relative w-full overflow-hidden bg-[#F9F9F9] mb-4 aspect-[3/4.1]">
+                                        <div className="relative w-full overflow-hidden bg-[#F9F9F9] mb-2.5 sm:mb-4 aspect-[3/4.1]">
                                             <Link to={`/product/${product.slug}`} className="block w-full h-full">
                                                 <img src={product.images?.[0]} alt={product.name} className="absolute inset-0 w-full h-full object-cover object-top" />
                                                 {product.images?.[1] && (
-                                                    <img src={product.images[1]} alt={product.name} className="absolute inset-0 w-full h-full object-cover object-top opacity-0 group-hover:opacity-100" />
+                                                    <img src={product.images[1]} alt={product.name} className="absolute inset-0 w-full h-full object-cover object-top opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                                 )}
                                             </Link>
                                             <HeartIcon filled={isInWishlist(product._id)} onClick={(e) => { e.preventDefault(); toggleWishlist(product); }} />
                                         </div>
                                         <div className="flex flex-col items-start pl-0.5">
-                                            <Link to={`/product/${product.slug}`} className="text-[11px] font-bold uppercase tracking-[0.05em] text-gray-900 mb-1 hover:underline">{product.designer}</Link>
-                                            <Link to={`/product/${product.slug}`} className="text-[13px] text-gray-600 font-light leading-snug hover:text-black transition-colors">{product.name}</Link>
-                                            <p className="text-[13px] font-medium mt-1.5">{product.price} {t.currency}</p>
+                                            <Link to={`/product/${product.slug}`} className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.05em] text-gray-900 mb-0.5 sm:mb-1 hover:underline line-clamp-1">{product.designer}</Link>
+                                            <Link to={`/product/${product.slug}`} className="text-[12px] sm:text-[13px] text-gray-600 font-light leading-snug hover:text-black transition-colors line-clamp-2">{product.name}</Link>
+                                            <p className="text-[12px] sm:text-[13px] font-medium mt-1 sm:mt-1.5">{product.price} {t.currency}</p>
 
                                             {/* COLORS */}
                                             {product.colors && product.colors.length > 0 && (
-                                                <div className="flex gap-1.5 mt-2">
+                                                <div className="flex flex-wrap gap-1.5 mt-1.5 sm:mt-2">
                                                     {product.colors.map((color, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`w-3 h-3 rounded-full border ${index === 0 ? 'border-black' : 'border-gray-300'}`}
+                                                            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border ${index === 0 ? 'border-black' : 'border-gray-300'}`}
                                                             style={{ backgroundColor: color.hex }}
                                                             title={color.name}
                                                         ></div>
@@ -569,7 +643,7 @@ const ClothingScreen = () => {
                                                 </div>
                                             )}
 
-                                            {product.isFeatured && <span className="text-[9px] text-[#A10000] font-bold uppercase tracking-widest mt-1.5">{t.new_season}</span>}
+                                            {product.isFeatured && <span className="text-[8px] sm:text-[9px] text-[#A10000] font-bold uppercase tracking-widest mt-1 sm:mt-1.5">{t.new_season}</span>}
                                         </div>
                                     </div>
                                 ))}
@@ -579,31 +653,31 @@ const ClothingScreen = () => {
                 </div>
 
                 {/* PAGINATION FOOTER */}
-                <div className="mt-28 w-full">
-                    <div className="flex justify-center mb-10">
-                        <button onClick={scrollToTop} className="rounded-full border border-gray-300 p-3 hover:border-black transition group">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6 text-gray-600 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
+                <div className="mt-16 sm:mt-28 w-full">
+                    <div className="flex justify-center mb-6 sm:mb-10">
+                        <button onClick={scrollToTop} className="rounded-full border border-gray-300 p-2.5 sm:p-3 hover:border-black transition group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 group-hover:text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
                         </button>
                     </div>
                     <hr className="border-gray-200" />
-                    <div className="flex justify-between items-center py-6 text-[13px] text-gray-500 font-medium">
-                        <button onClick={goToPrevPage} disabled={currentPage === 1} className={`flex items-center gap-4 transition ${currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-black cursor-pointer'}`}>
-                            <div className="flex items-center">
+                    <div className="flex justify-between items-center py-5 sm:py-6 text-[12px] sm:text-[13px] text-gray-500 font-medium">
+                        <button onClick={goToPrevPage} disabled={currentPage === 1} className={`flex items-center gap-2 sm:gap-4 transition ${currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-black cursor-pointer'}`}>
+                            <div className="hidden sm:flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                             </div>
                             <div className="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1 sm:mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                                 <span>{t.prev}</span>
                             </div>
                         </button>
                         <span className="text-black">{t.page} {currentPage} &nbsp;{t.from} {totalPages}</span>
-                        <button onClick={goToNextPage} disabled={currentPage === totalPages} className={`flex items-center gap-4 transition ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:text-black cursor-pointer'}`}>
+                        <button onClick={goToNextPage} disabled={currentPage === totalPages} className={`flex items-center gap-2 sm:gap-4 transition ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:text-black cursor-pointer'}`}>
                             <div className="flex items-center">
                                 <span>{t.next}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ml-2"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ml-1 sm:ml-2"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                             </div>
-                            <div className="flex items-center">
+                            <div className="hidden sm:flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                             </div>
