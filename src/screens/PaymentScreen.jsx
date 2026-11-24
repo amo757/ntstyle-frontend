@@ -57,6 +57,7 @@ const PaymentScreen = () => {
                 orderItems: cartItems.map(item => ({
                     product: item._id,
                     name: item.name,
+                    slug: item.slug, // 👈 დაემატა პროდუქტის კოდი
                     quantity: item.quantity,
                     price: item.price,
                     image: item.images?.[0] || '',

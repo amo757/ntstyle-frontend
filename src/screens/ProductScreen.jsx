@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom'; // Link დავამატეთ
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -36,7 +36,7 @@ const ProductScreen = () => {
     const [selectedColor, setSelectedColor] = useState(null);
     const [accordionState, setAccordionState] = useState({ notes: true, size: false, details: false });
 
-    // ✅ Notification State
+    // Notification State
     const [showNotification, setShowNotification] = useState(false);
 
     const { addToCart } = useCart();
@@ -69,10 +69,8 @@ const ProductScreen = () => {
         
         addToCart({ ...product, selectedColor }, selectedSize, 1);
         
-        // ✅ Show Notification
         setShowNotification(true);
 
-        // ავტომატურად გაქრეს 4 წამში (სურვილისამებრ)
         setTimeout(() => {
             setShowNotification(false);
         }, 4000);
@@ -83,29 +81,29 @@ const ProductScreen = () => {
     if (loading) return <div className="h-screen flex justify-center items-center font-serif tracking-widest">LOADING...</div>;
     if (!product) return <div className="h-screen flex justify-center items-center">Product not found</div>;
 
+    // პროდუქტის კოდის (slug) ფორმატირება
+    const productCode = product.slug || product._id.substring(0, 10).toUpperCase();
+
     return (
         <div className="bg-white min-h-screen font-sans pb-20 relative">
             <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap');`}</style>
 
-            {/* ✅ NOTIFICATION POPUP (Fixed Position) */}
+            {/* NOTIFICATION POPUP */}
             <div 
                 className={`fixed top-24 right-6 z-50 w-[380px] bg-white shadow-2xl border border-gray-100 transform transition-all duration-500 ease-in-out 
                 ${showNotification ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0 pointer-events-none'}`}
             >
                 <div className="p-5 flex items-start gap-4">
-                    {/* პატარა სურათი */}
                     <div className="w-20 h-28 flex-shrink-0 bg-gray-100">
                         <img src={product.images?.[0]} alt="Product" className="w-full h-full object-cover" />
                     </div>
                     
-                    {/* ტექსტი */}
                     <div className="flex-grow">
                         <h4 className="text-[13px] font-bold mb-1 text-black">This article was added to your shopping bag.</h4>
                         <p className="text-[11px] text-gray-500 mb-4 leading-tight">
                             Please note that your items are not reserved.
                         </p>
                         
-                        {/* ღილაკი */}
                         <Link 
                             to="/cart"
                             className="block w-full bg-black text-white text-center py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-gray-800 transition"
@@ -114,7 +112,6 @@ const ProductScreen = () => {
                         </Link>
                     </div>
 
-                    {/* დახურვის ღილაკი (X) */}
                     <button onClick={() => setShowNotification(false)} className="text-gray-400 hover:text-black">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -122,7 +119,6 @@ const ProductScreen = () => {
                     </button>
                 </div>
             </div>
-
 
             {/* MAIN CONTENT */}
             <div className="max-w-[1920px] mx-auto">
@@ -148,7 +144,13 @@ const ProductScreen = () => {
                             <h1 className="text-[32px] font-normal text-black mb-1 leading-tight" style={{ fontFamily: '"Playfair Display", serif' }}>
                                 {product.designer}
                             </h1>
-                            <p className="text-[14px] text-gray-600 font-light mb-4">{product.name}</p>
+                            <p className="text-[14px] text-gray-600 font-light mb-1">{product.name}</p>
+                            
+                            {/* ✅ პროდუქტის კოდი (Slug) */}
+                            <p className="text-[11px] uppercase tracking-widest text-gray-400 mb-4">
+                                Code: <span className="text-black font-semibold">{productCode}</span>
+                            </p>
+
                             <p className="text-[16px] font-bold text-black">{product.price} GEL</p>
                         </div>
 
@@ -232,8 +234,8 @@ const ProductScreen = () => {
                             </AccordionItem>
                         </div>
 
-                        <div className="text-[10px] text-gray-400 mt-6">
-                            Product Code: {product._id.substring(0, 10).toUpperCase()}
+                        <div className="text-[11px] text-gray-500 mt-6 uppercase tracking-wider">
+                            Product Code: <span className="font-semibold text-black">{productCode}</span>
                         </div>
 
                     </div>
